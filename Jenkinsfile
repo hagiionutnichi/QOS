@@ -19,5 +19,11 @@ cd ..'''
       }
     }
 
+    stage('Upload Artifact') {
+      steps {
+        archiveArtifacts 'CustomOS.img'
+      }
+    }
+
   }
 }
