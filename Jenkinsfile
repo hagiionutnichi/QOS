@@ -10,5 +10,14 @@ cd ..'''
       }
     }
 
+    stage('Kernel') {
+      steps {
+        sh '''cd kernel
+make setup
+make bootimg
+cd ..'''
+      }
+    }
+
   }
 }
