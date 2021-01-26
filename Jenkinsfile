@@ -13,7 +13,6 @@ cd ..'''
     stage('Kernel') {
       steps {
         sh '''cd kernel
-make setup
 make kernel
 make buildimg
 cd ..'''
