@@ -21,7 +21,7 @@ cd ..'''
 
     stage('Upload Artifact') {
       steps {
-        archiveArtifacts 'CustomOS.img'
+        archiveArtifacts 'kernel/bin/CustomOS.img'
       }
     }
 
