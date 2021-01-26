@@ -33,5 +33,5 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
 
-bin/QOS.img
-bin/kernel.elf
+kernel/bin/QOS.img
+kernel/bin/kernel.elf
