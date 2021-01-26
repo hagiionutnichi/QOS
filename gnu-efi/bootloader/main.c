@@ -33,8 +33,8 @@ int memcmp(const void* a, const void* b, size_t s) {
 	for(size_t i = 0; i < s; i++) {
 		if(aa[i] < bb[i]) return -1;
 		else if(aa[i] > bb[i]) return 1;
-		else return 0;
 	}
+	return 0;
 }
 
 EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
