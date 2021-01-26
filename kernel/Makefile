@@ -1,5 +1,5 @@
 
-OSNAME = CustomOS
+OSNAME = QOS
 
 GNUEFI = ../gnu-efi
 OVMFDIR = ../OVMFbin
