@@ -27,7 +27,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	InitializeLib(ImageHandle, SystemTable);
 	Print(L"Initializing Kernel...\n\r");
 
-	if(LoadFile(NULL, L"kernel.elm", ImageHandle, SystemTable) == NULL) {
+	if(LoadFile(NULL, L"kernel.elf", ImageHandle, SystemTable) == NULL) {
 		Print(L"Kernel couldn't be loaded\n\r");
 	} else {
 		Print(L"Kernel Loaded!\n\r");
