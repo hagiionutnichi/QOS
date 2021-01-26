@@ -14,7 +14,7 @@ cd ..'''
       steps {
         sh '''cd kernel
 make setup
-make bootimg
+make buildimg
 cd ..'''
       }
     }
