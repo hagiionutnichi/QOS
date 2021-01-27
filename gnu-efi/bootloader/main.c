@@ -2,6 +2,9 @@
 #include <efilib.h>
 #include <elf.h>
 
+#define PSF1_MAGIC0 0x36
+#define PSF1_MAGIC1 0x04
+
 typedef unsigned long long size_t;
 
 typedef struct {
@@ -11,6 +14,17 @@ typedef struct {
 	unsigned int Height;
 	unsigned int PixelsPerScanLine;
 } FrameBuffer;
+
+typedef struct {
+	unsigned char magic[2];
+	unsigned char mode;
+	unsigned char charsize;
+} PSF1_HEADER;
+
+typedef struct {
+	PSF1_HEADER* psf1_Header;
+	void* glyphBuffer;
+} PSF1_FONT;
 
 FrameBuffer framebuffer;
 FrameBuffer* InitializeGOP() {
@@ -56,6 +70,35 @@ EFI_FILE* LoadFile(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EF
 	}
 
 	return Result;
+}
+
+PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16 Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
+{
+	EFI_FILE* font = LoadFile(Directory, Path, ImageHandle, SystemTable);
+	if(font == NULL) return NULL;
+
+	PSF1_HEADER* fontHeader;
+	UINTN size = sizeof(PSF1_HEADER);
+	SystemTable->BootServices->AllocatePool(EfiLoaderData, size, (void**)&fontHeader);
+	font->Read(font, size, &fontHeader);
+	if (fontHeader->magic[0] != PSF1_MAGIC0 || fontHeader->magic[1] != PSF1_MAGIC1)
+		return NULL;
+
+	UINTN glyphBufferSize = fontHeader->mode == 1 ? 512 : 256;
+	glyphBufferSize *= fontHeader->charsize;
+
+	void* glyphBuffer;
+	{
+		font->SetPosition(font, size);
+		SystemTable->BootServices->AllocatePool(EfiLoaderData, glyphBufferSize, (void**)&glyphBuffer);
+		font->Read(font, &glyphBufferSize, glyphBuffer);
+	}
+
+	PSF1_FONT* loadedFont;
+	SystemTable->BootServices->AllocatePool(EfiLoaderData, sizeof(PSF1_FONT), (void**)&loadedFont);
+	loadedFont->glyphBuffer = glyphBuffer;
+	loadedFont->psf1_Header = fontHeader;
+	return loadedFont;
 }
 
 int memcmp(const void* a, const void* b, size_t s) {
@@ -136,6 +179,14 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	FrameBuffer* buffer = InitializeGOP();
 
 	Print(L"%dx%d@0x%x", buffer->Width, buffer->Height, buffer->BaseAddress);
+
+	PSF1_FONT* font = LoadPSF1Font(NULL, L"zap-ext-vga16.psf", ImageHandle, SystemTable);
+	if(font == NULL)
+		Print(L"Could not load font");
+	else
+		Print(L"Font loaded successfully");
+
+
 	Print(L"%d\r\n", KernelStart());
 	
 	return EFI_SUCCESS; // Exit the UEFI application
