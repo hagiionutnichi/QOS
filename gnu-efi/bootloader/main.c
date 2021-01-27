@@ -44,7 +44,7 @@ FrameBuffer* InitializeGOP() {
 	framebuffer.BufferSize = gop->Mode->FrameBufferSize;
 	framebuffer.Width = gop->Mode->Info->HorizontalResolution;
 	framebuffer.Height = gop->Mode->Info->VerticalResolution;
-	framebuffer.Width = gop->Mode->Info->PixelsPerScanLine;
+	framebuffer.PixelsPerScanLine = gop->Mode->Info->PixelsPerScanLine;
 
 	return &framebuffer;
 }
