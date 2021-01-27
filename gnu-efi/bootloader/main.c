@@ -1,9 +1,12 @@
 #include <efi.h>
 #include <efilib.h>
 #include <elf.h>
+#include <stdint.h>
 
 #define PSF1_MAGIC0 0x36
 #define PSF1_MAGIC1 0x04
+#define BMP_MAGIC0 0x42
+#define BMP_MAGIC1 0x4D
 
 typedef unsigned long long size_t;
 
@@ -25,6 +28,34 @@ typedef struct {
 	PSF1_HEADER* psf1_Header;
 	void* glyphBuffer;
 } PSF1_FONT;
+
+typedef struct __attribute__ ((packed)){
+	unsigned char magic[2];
+	unsigned int fileSize;
+	unsigned char res[4];
+	unsigned int pixelAddress;
+} BMP_HEADER;
+
+typedef struct __attribute__ ((packed)){
+	unsigned int dibSize;
+	signed int width;
+	signed int height;
+	unsigned short colorPlanes;
+	unsigned short bitsPerPixel;
+	unsigned int compressionMethod;
+	unsigned int rawSize;
+	signed int horizontalResolution;
+	signed int verticalResolution;
+	unsigned int numberOfColors;
+	unsigned int numberOfImportantColors;
+
+} BMP_DIB_HEADER;
+
+typedef struct {
+	BMP_HEADER* bmp_header;
+	BMP_DIB_HEADER* bmp_dib_header;
+	unsigned int* pixels;
+} BMP_IMAGE;
 
 FrameBuffer framebuffer;
 FrameBuffer* InitializeGOP() {
@@ -99,6 +130,38 @@ PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandl
 	loadedFont->glyphBuffer = glyphBuffer;
 	loadedFont->psf1_Header = fontHeader;
 	return loadedFont;
+}
+
+BMP_IMAGE* LoadBMP(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
+{
+	EFI_FILE* bmp = LoadFile(Directory, Path, ImageHandle, SystemTable);
+	if(bmp == NULL) return NULL;
+
+	BMP_HEADER* bmpHeader;
+	UINTN size = 14;
+	SystemTable->BootServices->AllocatePool(EfiLoaderData, size, (void**)&bmpHeader);
+	bmp->Read(bmp, &size, bmpHeader);
+	if (bmpHeader->magic[0] != BMP_MAGIC0 || bmpHeader->magic[1] != BMP_MAGIC1)
+		return NULL;
+
+	BMP_DIB_HEADER* bmpDibHeader;
+	size = 40;
+	SystemTable->BootServices->AllocatePool(EfiLoaderData, size, (void**)&bmpDibHeader);
+	bmp->Read(bmp, &size, bmpDibHeader);
+	
+	unsigned int* pixels;
+	size = bmpDibHeader->width * bmpDibHeader->height * (bmpDibHeader->bitsPerPixel << 3);
+	SystemTable->BootServices->AllocatePool(EfiLoaderData, size, (void**)&pixels);
+	bmp->SetPosition(bmp, bmpHeader->pixelAddress);
+	bmp->Read(bmp, &size, pixels);
+
+	BMP_IMAGE* image;
+	SystemTable->BootServices->AllocatePool(EfiLoaderData, sizeof(BMP_IMAGE), (void**)&image);
+	image->bmp_dib_header = bmpDibHeader;
+	image->bmp_header = bmpHeader;
+	image->pixels = pixels;
+
+	return image;
 }
 
 int memcmp(const void* a, const void* b, size_t s) {
@@ -186,8 +249,25 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	else
 		Print(L"Font loaded successfully\n\r");
 
-
-	Print(L"%d\r\n", KernelStart(buffer, font));
+	BMP_IMAGE* image = LoadBMP(NULL, L"albie.bmp", ImageHandle, SystemTable);
+	if(image == NULL) {
+		Print(L"Could not load BMP");
+	} else {
+		Print(L"BMP loaded successfully\n\r");
+		Print(L"Hex size: 0x%x\n\rDec size: %d\n\rPixel address: 0x%x\n\r", image->bmp_header->fileSize, image->bmp_header->fileSize, image->bmp_header->pixelAddress);
+		Print(L"Width: %d\n\r",image->bmp_dib_header->width);
+		Print(L"Height: %d\n\r",image->bmp_dib_header->height);
+		Print(L"Bits Per Pixel: %d\n\r",image->bmp_dib_header->bitsPerPixel);
+		Print(L"HR: %d\n\r",image->bmp_dib_header->horizontalResolution);
+		Print(L"VR: %d\n\r",image->bmp_dib_header->verticalResolution);
+		Print(L"RawSize: %d\n\r",image->bmp_dib_header->rawSize);
+		unsigned int* p = image->pixels;
+		Print(L"First colour: %x\n\r", p[0]);
+		Print(L"Second colour: %x\n\r", p[1]);
+		Print(L"Third colour: %x\n\r", p[2]);
+		Print(L"Fourth colour: %x\n\r", p[3]);
+	}
+	Print(L"%d\r\n", KernelStart(buffer, font, image));
 	
 	return EFI_SUCCESS; // Exit the UEFI application
 }
