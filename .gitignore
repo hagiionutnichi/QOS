@@ -35,3 +35,4 @@ Temporary Items
 
 kernel/bin/QOS.img
 kernel/bin/kernel.elf
+.vscode

@@ -2,8 +2,38 @@
 #include <efilib.h>
 #include <elf.h>
 
-
 typedef unsigned long long size_t;
+
+typedef struct {
+	void* BaseAddress;
+	size_t BufferSize;
+	unsigned int Width;
+	unsigned int Height;
+	unsigned int PixelsPerScanLine;
+} FrameBuffer;
+
+Framebuffer framebuffer;
+Framebuffer* InitializeGOP() {
+	EFI_GUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
+	EFI_GRAPHICS_OUTPUT_PROTOCOL* gop;
+	EFI_STATUS status;
+
+	status = uefi_call_wrapper(BS->LocateProtocol, 3, &gopGuid, NULL, (void**)&gop);
+	if(EFI_ERROR(status)) {
+		Print(L"Could not locate GOP\n\r");
+		return NULL;
+	} else {
+		Print(L"GOP located");
+	}
+
+	framebuffer.BaseAddress = (void*) gop->Mode->FrameBufferBase;
+	framebuffer.BaseSize = gop->Mode->FrameBufferSize;
+	framebuffer.Width = gop->Mode->Info->HorizontalResolution;
+	framebuffer.Height = gop->Mode->Info->VerticalResolution;
+	framebuffer.Width = gop->Mode->Info->PixelsPerScanLine;
+
+	return &framebuffer;
+}
 
 EFI_FILE* LoadFile(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
 {
@@ -103,7 +133,9 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	int (*KernelStart)() = ((__attribute__((sysv_abi)) int (*)() ) header.e_entry);
-
+	Framebuffer* buffer = InitializeGOP();
+	
+	Print(L"%dx%d@0x%x", buffer->Width, buffer->Height, buffer->BaseAddress);
 	Print(L"%d\r\n", KernelStart());
 	
 	return EFI_SUCCESS; // Exit the UEFI application
