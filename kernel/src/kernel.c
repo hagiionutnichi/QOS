@@ -36,11 +36,11 @@ void putChar(FrameBuffer* framebuffer, PSF1_FONT* psf1_font, unsigned int colour
 }
 
 void _start(FrameBuffer* framebuffer, PSF1_FONT* font)  {
-    putChar(framebuffer, font, 0xFFFFFF00, 'H', 0, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'e', 1, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'l', 2, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'l', 3, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'o', 4, 10);
+    putChar(framebuffer, font, 0xFFFFFF00, 'H', 0 * 8, 10);
+    putChar(framebuffer, font, 0xFFFFFF00, 'e', 1 * 8, 10);
+    putChar(framebuffer, font, 0xFFFFFF00, 'l', 2 * 8, 10);
+    putChar(framebuffer, font, 0xFFFFFF00, 'l', 3 * 8, 10);
+    putChar(framebuffer, font, 0xFFFFFF00, 'o', 4 * 8, 10);
 
     return;
 }
