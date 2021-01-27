@@ -178,7 +178,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	int (*KernelStart)() = ((__attribute__((sysv_abi)) int (*)() ) header.e_entry);
 	FrameBuffer* buffer = InitializeGOP();
 
-	Print(L"%dx%d@0x%x\n\r", buffer->Width, buffer->Height, buffer->BaseAddress);
+	Print(L"%dx%d@0x%x PPSL:%d\n\r", buffer->Width, buffer->Height, buffer->BaseAddress, buffer->PixelsPerScanLine);
 
 	PSF1_FONT* font = LoadPSF1Font(NULL, L"zap-ext-vga16.psf", ImageHandle, SystemTable);
 	if(font == NULL)
