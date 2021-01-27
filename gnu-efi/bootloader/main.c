@@ -72,7 +72,7 @@ EFI_FILE* LoadFile(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EF
 	return Result;
 }
 
-PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16 Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
+PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
 {
 	EFI_FILE* font = LoadFile(Directory, Path, ImageHandle, SystemTable);
 	if(font == NULL) return NULL;
