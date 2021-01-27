@@ -80,7 +80,7 @@ PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandl
 	PSF1_HEADER* fontHeader;
 	UINTN size = sizeof(PSF1_HEADER);
 	SystemTable->BootServices->AllocatePool(EfiLoaderData, size, (void**)&fontHeader);
-	font->Read(font, size, &fontHeader);
+	font->Read(font, &size, &fontHeader);
 	if (fontHeader->magic[0] != PSF1_MAGIC0 || fontHeader->magic[1] != PSF1_MAGIC1)
 		return NULL;
 
