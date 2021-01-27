@@ -187,7 +187,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		Print(L"Font loaded successfully\n\r");
 
 
-	Print(L"%d\r\n", KernelStart());
+	Print(L"%d\r\n", KernelStart(buffer, font));
 	
 	return EFI_SUCCESS; // Exit the UEFI application
 }
