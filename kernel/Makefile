@@ -7,7 +7,7 @@ LDS = kernel.ld
 CC = gcc
 LD = ld
 
-CFLAGS = -ffreestanding -fshort-wchar
+CFLAGS = -ffreestanding -fshort-wchar -fPIC
 LDFLAGS = -T $(LDS) -shared -Bsymbolic -nostdlib
 
 SRCDIR := src

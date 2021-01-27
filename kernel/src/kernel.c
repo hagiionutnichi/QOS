@@ -61,8 +61,7 @@ void _start(FrameBuffer* framebuffer, PSF1_FONT* font)  {
     CursorPosition.X = 50;
     CursorPosition.Y = 120;
     for (int t = 0; t < 50; t+=1){
-
-    Print(framebuffer, font, 0xffffffff, "Hello Kernel Hello Kernel");
+        Print(framebuffer, font, 0xffffffff, "Hello Kernel Hello Kernel");
     }
     return ;
 }
