@@ -12,8 +12,8 @@ typedef struct {
 	unsigned int PixelsPerScanLine;
 } FrameBuffer;
 
-Framebuffer framebuffer;
-Framebuffer* InitializeGOP() {
+FrameBuffer framebuffer;
+FrameBuffer* InitializeGOP() {
 	EFI_GUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
 	EFI_GRAPHICS_OUTPUT_PROTOCOL* gop;
 	EFI_STATUS status;
@@ -133,8 +133,8 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	}
 
 	int (*KernelStart)() = ((__attribute__((sysv_abi)) int (*)() ) header.e_entry);
-	Framebuffer* buffer = InitializeGOP();
-	
+	FrameBuffer* buffer = InitializeGOP();
+
 	Print(L"%dx%d@0x%x", buffer->Width, buffer->Height, buffer->BaseAddress);
 	Print(L"%d\r\n", KernelStart());
 	
