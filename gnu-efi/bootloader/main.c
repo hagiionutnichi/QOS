@@ -37,7 +37,7 @@ FrameBuffer* InitializeGOP() {
 		Print(L"Could not locate GOP\n\r");
 		return NULL;
 	} else {
-		Print(L"GOP located");
+		Print(L"GOP located\n\r");
 	}
 
 	framebuffer.BaseAddress = (void*) gop->Mode->FrameBufferBase;
@@ -80,7 +80,7 @@ PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandl
 	PSF1_HEADER* fontHeader;
 	UINTN size = sizeof(PSF1_HEADER);
 	SystemTable->BootServices->AllocatePool(EfiLoaderData, size, (void**)&fontHeader);
-	font->Read(font, &size, &fontHeader);
+	font->Read(font, &size, fontHeader);
 	if (fontHeader->magic[0] != PSF1_MAGIC0 || fontHeader->magic[1] != PSF1_MAGIC1)
 		return NULL;
 
@@ -178,13 +178,13 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	int (*KernelStart)() = ((__attribute__((sysv_abi)) int (*)() ) header.e_entry);
 	FrameBuffer* buffer = InitializeGOP();
 
-	Print(L"%dx%d@0x%x", buffer->Width, buffer->Height, buffer->BaseAddress);
+	Print(L"%dx%d@0x%x\n\r", buffer->Width, buffer->Height, buffer->BaseAddress);
 
 	PSF1_FONT* font = LoadPSF1Font(NULL, L"zap-ext-vga16.psf", ImageHandle, SystemTable);
 	if(font == NULL)
-		Print(L"Could not load font");
+		Print(L"Could not load font\n\r");
 	else
-		Print(L"Font loaded successfully");
+		Print(L"Font loaded successfully\n\r");
 
 
 	Print(L"%d\r\n", KernelStart());
