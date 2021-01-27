@@ -20,6 +20,11 @@ typedef struct {
 	void* glyphBuffer;
 } PSF1_FONT;
 
+typedef struct {
+    unsigned int X;
+    unsigned int Y;
+} Point;
+
 void putChar(FrameBuffer* framebuffer, PSF1_FONT* psf1_font, unsigned int colour, char chr, unsigned int xOff, unsigned int yOff)
 {
     unsigned int* base = (unsigned int*)framebuffer->BaseAddress;
@@ -35,12 +40,29 @@ void putChar(FrameBuffer* framebuffer, PSF1_FONT* psf1_font, unsigned int colour
     }
 }
 
-void _start(FrameBuffer* framebuffer, PSF1_FONT* font)  {
-    putChar(framebuffer, font, 0xFFFFFF00, 'H', 0 * 8, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'e', 1 * 8, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'l', 2 * 8, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'l', 3 * 8, 10);
-    putChar(framebuffer, font, 0xFFFFFF00, 'o', 4 * 8, 10);
+Point CursorPosition;
+void Print(FrameBuffer* framebuffer, PSF1_FONT* psf1_font, unsigned int colour, char* str)
+{
+    
+    char* chr = str;
+    while(*chr != 0){
+        putChar(framebuffer, psf1_font, colour, *chr, CursorPosition.X, CursorPosition.Y);
+        CursorPosition.X+=8;
+        if(CursorPosition.X + 8 > framebuffer->Width)
+        {
+            CursorPosition.X = 0;
+            CursorPosition.Y += 16;
+        }
+        chr++;
+    }
+}
 
-    return;
+void _start(FrameBuffer* framebuffer, PSF1_FONT* font)  {
+    CursorPosition.X = 50;
+    CursorPosition.Y = 120;
+    for (int t = 0; t < 50; t+=1){
+
+    Print(framebuffer, font, 0xffffffff, "Hello Kernel Hello Kernel");
+    }
+    return ;
 }
