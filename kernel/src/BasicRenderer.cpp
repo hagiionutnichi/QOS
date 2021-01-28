@@ -48,7 +48,7 @@ void BasicRenderer::DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yO
     unsigned int y = yOff + image->bmp_dib_header->height;
     unsigned int* col;
     size_t count = image->bmp_dib_header->width * image->bmp_dib_header->height;
-    for(col = image->pixels; col <= image->pixels + count; col++) {
+    for(col = image->pixels; col < image->pixels + count; col++) {
         PutPixel(*col, x, y);
         x++;
         if(x - xOff + 1 > image->bmp_dib_header->width)
