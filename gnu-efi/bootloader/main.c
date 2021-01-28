@@ -29,34 +29,6 @@ typedef struct {
 	void* glyphBuffer;
 } PSF1_FONT;
 
-typedef struct __attribute__ ((packed)){
-	unsigned char magic[2];
-	unsigned int fileSize;
-	unsigned char res[4];
-	unsigned int pixelAddress;
-} BMP_HEADER;
-
-typedef struct __attribute__ ((packed)){
-	unsigned int dibSize;
-	signed int width;
-	signed int height;
-	unsigned short colorPlanes;
-	unsigned short bitsPerPixel;
-	unsigned int compressionMethod;
-	unsigned int rawSize;
-	signed int horizontalResolution;
-	signed int verticalResolution;
-	unsigned int numberOfColors;
-	unsigned int numberOfImportantColors;
-
-} BMP_DIB_HEADER;
-
-typedef struct {
-	BMP_HEADER* bmp_header;
-	BMP_DIB_HEADER* bmp_dib_header;
-	unsigned int* pixels;
-} BMP_IMAGE;
-
 FrameBuffer framebuffer;
 FrameBuffer* InitializeGOP() {
 	EFI_GUID gopGuid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
@@ -131,6 +103,34 @@ PSF1_FONT* LoadPSF1Font(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandl
 	loadedFont->psf1_Header = fontHeader;
 	return loadedFont;
 }
+
+typedef struct __attribute__ ((packed)){
+	unsigned char magic[2];
+	unsigned int fileSize;
+	unsigned char res[4];
+	unsigned int pixelAddress;
+} BMP_HEADER;
+
+typedef struct __attribute__ ((packed)){
+	unsigned int dibSize;
+	signed int width;
+	signed int height;
+	unsigned short colorPlanes;
+	unsigned short bitsPerPixel;
+	unsigned int compressionMethod;
+	unsigned int rawSize;
+	signed int horizontalResolution;
+	signed int verticalResolution;
+	unsigned int numberOfColors;
+	unsigned int numberOfImportantColors;
+
+} BMP_DIB_HEADER;
+
+typedef struct {
+	BMP_HEADER* bmp_header;
+	BMP_DIB_HEADER* bmp_dib_header;
+	unsigned int* pixels;
+} BMP_IMAGE;
 
 BMP_IMAGE* LoadBMP(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
 {
