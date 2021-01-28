@@ -132,6 +132,14 @@ typedef struct {
 	unsigned int* pixels;
 } BMP_IMAGE;
 
+typedef struct {
+	FrameBuffer* framebuffer;
+	PSF1_FONT* psf1_Font;
+	EFI_MEMORY_DESCRIPTOR* mMap;
+	UINTN mMapSize;
+	UINTN mMapDescSize;
+} BootInfo;
+
 BMP_IMAGE* LoadBMP(EFI_FILE* Directory, CHAR16* Path, EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
 {
 	EFI_FILE* bmp = LoadFile(Directory, Path, ImageHandle, SystemTable);
@@ -238,7 +246,6 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		}
 	}
 
-	int (*KernelStart)() = ((__attribute__((sysv_abi)) int (*)() ) header.e_entry);
 	FrameBuffer* buffer = InitializeGOP();
 
 	Print(L"%dx%d@0x%x PPSL:%d\n\r", buffer->Width, buffer->Height, buffer->BaseAddress, buffer->PixelsPerScanLine);
@@ -267,7 +274,29 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		Print(L"Third colour: %x\n\r", p[2]);
 		Print(L"Fourth colour: %x\n\r", p[3]);
 	}
-	Print(L"%d\r\n", KernelStart(buffer, font, image));
+
+	EFI_MEMORY_DESCRIPTOR* Map = NULL;
+	UINTN MapSize, MapKey;
+	UINTN DescriptorSize;
+	UINT32 DescriptorVersion;
+	{
+		SystemTable->BootServices->GetMemoryMap(&MapSize, Map, &MapKey, &DescriptorSize, &DescriptorVersion);
+		SystemTable->BootServices->AllocatePool(EfiLoaderData, MapSize, (void**)&Map);
+		SystemTable->BootServices->GetMemoryMap(&MapSize, Map, &MapKey, &DescriptorSize, &DescriptorVersion);
+	}
+
+	BootInfo bootInfo;
+	bootInfo.framebuffer = buffer;
+	bootInfo.psf1_Font = font;
+	bootInfo.mMap = Map;
+	bootInfo.mMapDescSize = DescriptorSize;
+	bootInfo.mMapSize = MapSize;
+	
+	SystemTable->BootServices->ExitBootServices(ImageHandle, MapKey);
+
+	void (*KernelStart)() = ((__attribute__((sysv_abi)) void (*)() ) header.e_entry);
+
+	KernelStart(&bootInfo, image);
 	
 	return EFI_SUCCESS; // Exit the UEFI application
 }
