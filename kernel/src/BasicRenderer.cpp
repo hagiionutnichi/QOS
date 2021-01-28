@@ -27,10 +27,10 @@ void BasicRenderer::PutPixel(unsigned int colour, unsigned int x, unsigned int y
     *(unsigned int*)(base + x + (y * Framebuffer->PixelsPerScanLine)) = colour;
 }
 
-void BasicRenderer::Print(unsigned int colour, char* str)
+void BasicRenderer::Print(const char* str, unsigned int colour)
 {
     
-    char* chr = str;
+    char* chr = (char *) str;
     while(*chr != 0){
         PutChar(colour, *chr, CursorPosition.X, CursorPosition.Y);
         CursorPosition.X+=8;
