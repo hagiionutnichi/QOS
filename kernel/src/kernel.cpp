@@ -7,6 +7,7 @@
 #include "EfiMemory.h"
 #include "memory.h"
 #include "Bitmap.h"
+#include "PageFrameAllocator.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;
@@ -17,6 +18,8 @@ struct BootInfo {
 };
 
 uint8_t bytes[20];
+extern uint64_t _KernelStart;
+extern uint64_t _KernelEnd;
 extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     BasicRenderer renderer = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
@@ -63,6 +66,36 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
         renderer.Print(bitmap[t] ? "true" : "false");
         renderer.CursorPosition.X = 320;
         renderer.CursorPosition.Y += 16;
+    }
+
+    PageFrameAllocator newAllocator;
+    newAllocator.ReadEfiMemoryMap(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDescSize);
+
+    uint64_t kernelSize = (uint64_t)&_KernelEnd - (uint64_t)&_KernelStart;
+    uint64_t kernelPages = (uint64_t)kernelSize / 4096 + 1;
+
+    newAllocator.LockPages(&_KernelStart, kernelPages);
+
+    renderer.CursorPosition = {370, renderer.CursorPosition.Y + 16};
+    renderer.Print("Free RAM: ");
+    renderer.Print(to_string(newAllocator.GetFreeRAM() / 1024));
+    renderer.Print(" KB ");
+    renderer.CursorPosition = {370, renderer.CursorPosition.Y + 16};
+
+    renderer.Print("Used RAM: ");
+    renderer.Print(to_string(newAllocator.GetUsedRAM() / 1024));
+    renderer.Print(" KB ");
+    renderer.CursorPosition = {370, renderer.CursorPosition.Y + 16};
+
+    renderer.Print("Reserved RAM: ");
+    renderer.Print(to_string(newAllocator.GetReservedRAM() / 1024));
+    renderer.Print(" KB ");
+    renderer.CursorPosition = {370, renderer.CursorPosition.Y + 16};
+
+    for (int t = 0; t < 20; t++){
+        void* address = newAllocator.RequestPage();
+        renderer.Print(to_hstring((uint64_t)address));
+        renderer.CursorPosition = {370, renderer.CursorPosition.Y + 16};
     }
     return ;
 }

@@ -20,3 +20,12 @@ void Bitmap::Set(uint64_t index, bool value) {
     if(value)
         mBuffer[byteIndex] |= bitIndexer;
 }
+
+void Bitmap::SetByte(uint64_t index, uint8_t value) {
+    uint64_t byteIndex = index / 8;
+    mBuffer[byteIndex] = value;
+}
+
+size_t Bitmap::GetSize() {
+    return mSize;
+}
