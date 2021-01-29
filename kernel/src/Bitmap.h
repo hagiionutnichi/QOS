@@ -9,6 +9,6 @@ class Bitmap {
     void Set(uint64_t index, bool value);
 
     private:
-    size_t size;
-    uint8_t* Buffer;
+    size_t mSize;
+    uint8_t* mBuffer;
 };

@@ -16,6 +16,7 @@ struct BootInfo {
 	uint64_t mMapDescSize;
 };
 
+uint8_t bytes[20];
 extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     BasicRenderer renderer = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
@@ -40,7 +41,6 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     renderer.CursorPosition = {320, 48};
     renderer.Print(to_string(GetMemorySize(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDescSize)));
 
-    uint8_t bytes[20];
     Bitmap bitmap = Bitmap(&bytes[0], (size_t) 20);
     bitmap.Set(0, false);
     bitmap.Set(1, true);
@@ -50,10 +50,14 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     bitmap.Set(5, true);
     bitmap.Set(6, false);
     bitmap.Set(7, true);
-    bitmap.Set(8, true);
-    bitmap.Set(9, true);
+    bitmap.Set(8, false);
+    bitmap.Set(9, false);
     bitmap.Set(10, true);
     bitmap.Set(11, true);
+    bitmap.Set(12, false);
+    bitmap.Set(13, false);
+    bitmap.Set(14, true);
+    bitmap.Set(15, true);
 
     for(size_t t = 0; t < 20; t++) {
         renderer.Print(bitmap[t] ? "true" : "false");
