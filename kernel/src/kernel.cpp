@@ -5,11 +5,12 @@
 #include "math.h"
 #include "numstring.h"
 #include "EfiMemory.h"
+#include "memory.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;
 	PSF1_FONT* psf1_Font;
-	void* mMap;
+	EFI_MEMORY_DESCRIPTOR* mMap;
 	uint64_t mMapSize;
 	uint64_t mMapDescSize;
 };
@@ -34,5 +35,8 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
         renderer.Print(to_string(desc->numPages * 4096 / 1024), 0xffffff00);
         renderer.Print(" KB", 0xffffff00);
     }
+
+    renderer.CursorPosition = {200, 200};
+    renderer.Print(to_string(GetMemorySize(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDescSize)));
     return ;
 }
