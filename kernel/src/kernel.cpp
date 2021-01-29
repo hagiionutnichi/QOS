@@ -6,7 +6,7 @@
 #include "numstring.h"
 #include "EfiMemory.h"
 #include "memory.h"
-#include "bitmap.h"
+#include "Bitmap.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;
