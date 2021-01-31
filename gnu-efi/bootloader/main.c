@@ -256,7 +256,7 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	else
 		Print(L"Font loaded successfully\n\r");
 
-	BMP_IMAGE* image = LoadBMP(NULL, L"albie.bmp", ImageHandle, SystemTable);
+	BMP_IMAGE* image = LoadBMP(NULL, L"albie320.bmp", ImageHandle, SystemTable);
 	if(image == NULL) {
 		Print(L"Could not load BMP");
 	} else {
