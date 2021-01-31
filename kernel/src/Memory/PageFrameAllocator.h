@@ -23,3 +23,4 @@ class PageFrameAllocator {
     private:
     void InitBitmap(size_t size, void* bufferAddress);
 };
+extern PageFrameAllocator GlobalAllocator;
