@@ -1,13 +1,13 @@
-#include "BasicRenderer.h"
-#include "Framebuffer.h"
-#include "PSF_1.h"
-#include "BMP.h"
+#include "Graphics/BasicRenderer.h"
+#include "Graphics/Framebuffer.h"
+#include "FileFormats/PSF_1.h"
+#include "FileFormats/BMP.h"
 #include "math.h"
 #include "numstring.h"
-#include "EfiMemory.h"
-#include "memory.h"
-#include "Bitmap.h"
-#include "PageFrameAllocator.h"
+#include "Memory/EfiMemory.h"
+#include "Memory/memory.h"
+#include "Memory/Bitmap.h"
+#include "Memory/PageFrameAllocator.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;

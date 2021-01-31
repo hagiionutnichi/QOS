@@ -1,8 +1,8 @@
 #pragma once
 #include "Framebuffer.h"
-#include "PSF_1.h"
-#include "BMP.h"
-#include "math.h"
+#include "../FileFormats/PSF_1.h"
+#include "../FileFormats/BMP.h"
+#include "../math.h"
 
 class BasicRenderer {
     public:
