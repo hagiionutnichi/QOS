@@ -70,6 +70,7 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     uint64_t* test = (uint64_t*)0x600000000;
     *test = 26;
-
+    
+    renderer.CursorPosition = {320, 64};
     renderer.Print(to_string(*test));
 }

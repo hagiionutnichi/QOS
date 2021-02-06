@@ -39,7 +39,7 @@ setup:
 	@mkdir $(OBJDIR)
 
 buildimg:
-	dd if=/dev/zero of=$(BUILDDIR)/$(OSNAME).img bs=512 count=103750
+	dd if=/dev/zero of=$(BUILDDIR)/$(OSNAME).img bs=512 count=93750
 	mformat -i $(BUILDDIR)/$(OSNAME).img -f 2880 ::
 	mmd -i $(BUILDDIR)/$(OSNAME).img ::/EFI
 	mmd -i $(BUILDDIR)/$(OSNAME).img ::/EFI/BOOT
