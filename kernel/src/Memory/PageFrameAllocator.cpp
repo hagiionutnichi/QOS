@@ -65,11 +65,12 @@ void PageFrameAllocator::LockPages(void* address, uint64_t pageCount){
     }
 }
 
+uint64_t pageBitmapIndex = 0;
 void* PageFrameAllocator::RequestPage(){
-    for (uint64_t index = 0; index < PageBitmap.GetSize() * 8; index++){
-        if (PageBitmap[index] == true) continue;
-        LockPage((void*)(index * 4096));
-        return (void*)(index * 4096);
+    for (; pageBitmapIndex < PageBitmap.GetSize() * 8; pageBitmapIndex++){
+        if (PageBitmap[pageBitmapIndex] == true) continue;
+        LockPage((void*)(pageBitmapIndex * 4096));
+        return (void*)(pageBitmapIndex * 4096);
     }
 
     return NULL; // Page Frame Swap to file
@@ -81,6 +82,7 @@ void PageFrameAllocator::FreePage(void* address){
     if(PageBitmap.Set(index, false)) {
         freeMemory += 4096;
         usedMemory -= 4096;
+        if(pageBitmapIndex > index) pageBitmapIndex = index;
     }
 }
 
@@ -96,6 +98,7 @@ void PageFrameAllocator::UnreservePage(void* address){
     if(PageBitmap.Set(index, false)){
         freeMemory += 4096;
         reservedMemory -= 4096;
+        if(pageBitmapIndex > index) pageBitmapIndex = index;
     }
 }
 
