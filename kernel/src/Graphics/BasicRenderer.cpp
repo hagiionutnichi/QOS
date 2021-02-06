@@ -1,5 +1,6 @@
 #include "BasicRenderer.h"
 
+BasicRenderer* GlobalRenderer;
 BasicRenderer::BasicRenderer(FrameBuffer* framebuffer, PSF1_FONT* psf1_font)
 {
     this->Framebuffer = framebuffer;

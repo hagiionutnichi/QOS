@@ -16,3 +16,5 @@ class BasicRenderer {
     void DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yOff);
     void SetCursor(unsigned int x, unsigned int y);
 };
+
+extern BasicRenderer* GlobalRenderer;
