@@ -44,6 +44,17 @@ void BasicRenderer::Print(const char* str, unsigned int colour)
     }
 }
 
+void BasicRenderer::PrintChar(char chr, unsigned int colour)
+{
+    PutChar(colour, chr, CursorPosition.X, CursorPosition.Y);
+    CursorPosition.X+=8;
+    if(CursorPosition.X + 8 > Framebuffer->Width)
+    {
+        CursorPosition.X = 0;
+        CursorPosition.Y += 16;
+    }
+}
+
 void BasicRenderer::DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yOff) {
     unsigned int x = xOff;
     unsigned int y = yOff + image->bmp_dib_header->height;

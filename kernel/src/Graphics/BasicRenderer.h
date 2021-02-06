@@ -12,6 +12,7 @@ class BasicRenderer {
     FrameBuffer* Framebuffer;
     PSF1_FONT* font;
     void PutChar(unsigned int colour, char chr, unsigned int xOff, unsigned int yOff);
+    void PrintChar(char chr, unsigned int colour = 0xffffffff);
     void PutPixel(unsigned int colour, unsigned int x, unsigned int y);
     void Print(const char* str, unsigned int colour = 0xffffffff);
     void DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yOff);
