@@ -7,4 +7,6 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     renderer.CursorPosition = {0, 0};
     renderer.Print("Kernel Initialised");
+
+    while(true);
 }
