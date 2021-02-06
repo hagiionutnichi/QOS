@@ -65,3 +65,20 @@ void BasicRenderer::SetCursor(unsigned int x, unsigned int y)
     CursorPosition.X = x;
     CursorPosition.Y = y;
 }
+void BasicRenderer::Clear(uint32_t colour) {
+    uint64_t fbBase = (uint64_t)Framebuffer->BaseAddress;
+    uint64_t fbBytesPerScanline = Framebuffer->PixelsPerScanLine * 4;
+    uint64_t fbHeight = Framebuffer->Height;
+    uint64_t fbSize = Framebuffer->BufferSize;
+    for(int vsc = 0; vsc < fbHeight; vsc++) {
+        uint64_t pixPtrBase = fbBase + (fbBytesPerScanline * vsc);
+        for(uint32_t* pixPtr = (uint32_t*)pixPtrBase; pixPtr < (uint32_t*)(pixPtrBase + fbBytesPerScanline); pixPtr++) {
+            *pixPtr = colour;
+        }
+    }
+
+}
+void BasicRenderer::NewLine(){
+    CursorPosition.X = 0;
+    CursorPosition.Y += 16;
+}

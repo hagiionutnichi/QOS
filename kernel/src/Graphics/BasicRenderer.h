@@ -3,6 +3,7 @@
 #include "../FileFormats/PSF_1.h"
 #include "../FileFormats/BMP.h"
 #include "../math.h"
+#include <stdint.h>
 
 class BasicRenderer {
     public:
@@ -15,6 +16,8 @@ class BasicRenderer {
     void Print(const char* str, unsigned int colour = 0xffffffff);
     void DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yOff);
     void SetCursor(unsigned int x, unsigned int y);
+    void Clear(uint32_t colour);
+    void NewLine();
 };
 
 extern BasicRenderer* GlobalRenderer;
