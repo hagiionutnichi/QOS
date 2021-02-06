@@ -21,7 +21,10 @@ struct BootInfo {
 uint8_t bytes[20];
 extern uint64_t _KernelStart;
 extern uint64_t _KernelEnd;
+
 extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
+    //Clear screen
+    memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
 
     BasicRenderer renderer = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
     renderer.SetCursor(0, 0);
@@ -60,6 +63,10 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     uint64_t fbBase = (uint64_t)bootInfo->framebuffer->BaseAddress;
     uint64_t fbSize = (uint64_t)bootInfo->framebuffer->BufferSize + 0x1000;
+
+    //Lock the page in which the Framebuffer resides
+    GlobalAllocator.LockPages((void*)fbBase, fbSize/0x1000 + 1);
+
     for (uint64_t t = fbBase; t < fbBase + fbSize; t += 4096){
         pageTableManager.MapMemory((void*)t, (void*)t);
     }
@@ -70,7 +77,7 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     uint64_t* test = (uint64_t*)0x600000000;
     *test = 26;
-    
+
     renderer.CursorPosition = {320, 64};
     renderer.Print(to_string(*test));
 }
