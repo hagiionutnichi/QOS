@@ -29,6 +29,8 @@ void HandleKeyboard(uint8_t scancode) {
             break;
     }
     char result = QWERTY_US_MAC::Translate(scancode, isLeftShiftPressed || isRightShiftPressed);
-    if(result != 0)
+    if(result != 0) {
         GlobalRenderer->PrintChar(result);
+        GlobalCLI->KeyHandle(result);
+    }
 }

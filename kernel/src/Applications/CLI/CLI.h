@@ -6,7 +6,10 @@ class CLI {
     public:
     void start();
     void execute(char* command, ...);
+    void KeyHandle(char c);
 
     private:
     void requestInput();
 };
+
+extern CLI* GlobalCLI;

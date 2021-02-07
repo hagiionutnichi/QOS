@@ -1,5 +1,6 @@
 #include "kernelUtil.h"
 
+CLI c = CLI();
 extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     KernelInfo kernelInfo = InitialiseKernel(bootInfo);
     PageTableManager* pageTableManager = kernelInfo.pageTableManager;
@@ -7,9 +8,9 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     GlobalRenderer->CursorPosition = {0, 0};
     GlobalRenderer->Print("Kernel Initialised");
 
-    CLI cli = CLI();
-    cli.start();
-    cli.execute("albie", albie);
+    GlobalCLI = &c;
+    GlobalCLI->start();
+    // cli.execute("albie", albie);
 
     while(true);
 }
