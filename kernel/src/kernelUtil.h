@@ -11,6 +11,7 @@
 #include "Memory/Bitmap.h"
 #include "Memory/PageFrameAllocator.h"
 #include "Memory/PageTableManager.h"
+#include "Applications/CLI/CLI.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;

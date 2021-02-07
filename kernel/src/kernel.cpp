@@ -7,5 +7,8 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     GlobalRenderer->CursorPosition = {0, 0};
     GlobalRenderer->Print("Kernel Initialised");
 
+    CLI cli = CLI();
+    cli.start();
+
     while(true);
 }
