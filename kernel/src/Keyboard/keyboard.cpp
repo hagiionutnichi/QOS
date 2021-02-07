@@ -6,22 +6,25 @@ void HandleKeyboard(uint8_t scancode) {
     switch(scancode) {
         case LEFT_SHIFT:
             isLeftShiftPressed = true;
-            break;
+            return;
         case LEFT_SHIFT + 0x80:
             isLeftShiftPressed = false;
-            break;
+            return;
         case RIGHT_SHIFT:
             isRightShiftPressed = true;
-            break;
+            return;
         case RIGHT_SHIFT + 0x80:
             isRightShiftPressed = false;
-            break;
+            return;
         case ENTER:
             GlobalRenderer->NewLine();
-            break;
+            return;
         case BACKSPACE:
             GlobalRenderer->Backspace();
-            break;
+            return;
+        case SPACEBAR:
+            GlobalRenderer->PrintChar(' ');
+            return;
         default:
             break;
     }

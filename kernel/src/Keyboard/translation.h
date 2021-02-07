@@ -6,6 +6,7 @@ namespace QWERTY_US_MAC {
     #define RIGHT_SHIFT     0x36
     #define ENTER           0x1C 
     #define BACKSPACE       0x0E
+    #define SPACEBAR        0x39
     extern const char ASCIITable[];
     char Translate(uint8_t scancode, bool uppercase);
 }
