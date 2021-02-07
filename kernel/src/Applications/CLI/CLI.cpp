@@ -19,12 +19,26 @@ void CLI::execute(char* command, ...) {
         // BMP_IMAGE* albie = va_arg(args, BMP_IMAGE*);
         // GlobalRenderer->DrawBMP(albie, 0, 0);
         GlobalRenderer->Print("My name's albie and you can't beat it");
+    } else if(strcmp(command, "help") == 0) {
+        GlobalRenderer->Print("Available Commands:");
+        GlobalRenderer->NewLine();
+        GlobalRenderer->Print("-------------------");
+        GlobalRenderer->NewLine();
+        GlobalRenderer->Print("albie - prints a cute message");
+        GlobalRenderer->NewLine();
+        GlobalRenderer->Print("help - lists available commands");
+        GlobalRenderer->NewLine();
+    } else {
+        GlobalRenderer->Print("Unknown Command '");
+        GlobalRenderer->Print(command);
+        GlobalRenderer->Print("'.Use 'help' to list available commands.");
     }
     va_end(args);
     requestInput();
 }
 
 void CLI::requestInput() {
+    bufferIndex = 0;
     if(GlobalRenderer->CursorPosition.X != 0) {
         GlobalRenderer->NewLine();
     }
@@ -33,6 +47,7 @@ void CLI::requestInput() {
 
 void CLI::KeyHandle(char c) {
     if(c == '\n') {
+        commandBuffer[bufferIndex++] = '\0';
         execute(commandBuffer);
         bufferIndex = 0;
     } else {
