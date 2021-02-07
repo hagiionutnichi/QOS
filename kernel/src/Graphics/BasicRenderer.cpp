@@ -53,6 +53,11 @@ void BasicRenderer::PrintChar(char chr, unsigned int colour)
         CursorPosition.X = 0;
         CursorPosition.Y += 16;
     }
+    if(CursorPosition.Y + 8 > Framebuffer->Height)
+    {
+        CursorPosition.X = 0;
+        CursorPosition.Y = Framebuffer->Height - 8;
+    }
 }
 
 void BasicRenderer::DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yOff) {
@@ -95,23 +100,32 @@ void BasicRenderer::NewLine(){
 }
 
 void BasicRenderer::Backspace() {
-    if(CursorPosition.X == 0) {
+     if (CursorPosition.X == 0){
         CursorPosition.X = Framebuffer->Width;
         CursorPosition.Y -= 16;
-        if(CursorPosition.Y < 0) CursorPosition.Y = 0;
+        if (CursorPosition.Y < 0){
+            CursorPosition = {0, 0};
+            return;
+        }
     }
 
-    //Clear 8x16
-    unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
-    for (unsigned long y = CursorPosition.Y; y < CursorPosition.Y + 16; y++)
-        for (unsigned long x = CursorPosition.X - 8; x < CursorPosition.X; x++)
-            *(unsigned int*)(base + x + (y * Framebuffer->PixelsPerScanLine)) = 0x00000000;
-    
+
+    unsigned int xOff = CursorPosition.X;
+    unsigned int yOff = CursorPosition.Y;
+
+    unsigned int* pixPtr = (unsigned int*)Framebuffer->BaseAddress;
+    for (unsigned long y = yOff; y < yOff + 16; y++){
+        for (unsigned long x = xOff - 8; x < xOff; x++){
+                    *(unsigned int*)(pixPtr + x + (y * Framebuffer->PixelsPerScanLine)) = 0x00000000;
+        }
+    }
+
     CursorPosition.X -= 8;
 
-    if(CursorPosition.X < 0) {
+    if (CursorPosition.X < 0){
         CursorPosition.X = Framebuffer->Width;
         CursorPosition.Y -= 16;
-        if(CursorPosition.Y < 0) CursorPosition = {0, 0};
+        if (CursorPosition.Y < 0) CursorPosition = {0, 0};
     }
+
 }
