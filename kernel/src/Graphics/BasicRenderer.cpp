@@ -7,9 +7,17 @@ BasicRenderer::BasicRenderer(FrameBuffer* framebuffer, PSF1_FONT* psf1_font)
     this->font = psf1_font;
 }
 
+void memory_copy(uint32_t *source, uint32_t *dest, int nbytes) {
+    int i;
+    for (i = 0; i < nbytes; i++) {
+        *(dest + i) = *(source + i);
+    }
+}
+
 void BasicRenderer::PutChar(unsigned int colour, char chr, unsigned int xOff, unsigned int yOff)
 {
     unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
+
     char* fontPtr = (char *) font->glyphBuffer + (chr * font->psf1_Header->charsize);
     for (unsigned long y = yOff; y < yOff + 16; y++){
         for (unsigned long x = xOff; x < xOff+8; x++){
@@ -20,6 +28,8 @@ void BasicRenderer::PutChar(unsigned int colour, char chr, unsigned int xOff, un
         }
         fontPtr++;
     }
+
+    
 }
 
 void BasicRenderer::PutPixel(unsigned int colour, unsigned int x, unsigned int y)
@@ -46,6 +56,8 @@ void BasicRenderer::Print(const char* str, unsigned int colour)
 
 void BasicRenderer::PrintChar(char chr, unsigned int colour)
 {
+    unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
+
     PutChar(colour, chr, CursorPosition.X, CursorPosition.Y);
     CursorPosition.X+=8;
     if(CursorPosition.X + 8 > Framebuffer->Width)
@@ -53,7 +65,21 @@ void BasicRenderer::PrintChar(char chr, unsigned int colour)
         CursorPosition.X = 0;
         CursorPosition.Y += 16;
     }
-    if(CursorPosition.Y + 8 > Framebuffer->Height)
+        /* Check if the offset is over screen size and scroll */
+    if (CursorPosition.Y > Framebuffer->Height - 16) {
+        int i;
+        for (i = 16; i < Framebuffer->Height; i++) 
+            memory_copy((uint32_t*)(base + 0 + (i * Framebuffer->PixelsPerScanLine)),
+                    (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine)),
+                    Framebuffer->PixelsPerScanLine);
+
+        /* Blank last line */
+        uint32_t *last_line = (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine));
+        for(size_t t = 0; t < 16; t++)
+            for (i = t * Framebuffer->Width; i < t * Framebuffer->Width + Framebuffer->Width; i++) last_line[i] = 0;
+    }
+
+    if(CursorPosition.Y + 16 > Framebuffer->Height)
     {
         CursorPosition.X = 0;
         CursorPosition.Y = Framebuffer->Height - 16;
@@ -97,8 +123,24 @@ void BasicRenderer::Clear(uint32_t colour) {
 void BasicRenderer::NewLine(){
     CursorPosition.X = 0;
     CursorPosition.Y += 16;
-    if(CursorPosition.Y >= Framebuffer->Height)
-    {
+    long xOff = CursorPosition.X;
+    long yOff = CursorPosition.Y;
+
+    unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
+
+    /* Check if the offset is over screen size and scroll */
+    if (yOff > Framebuffer->Height - 16) {
+        int i;
+        for (i = 16; i < Framebuffer->Height; i++) 
+            memory_copy((uint32_t*)(base + 0 + (i * Framebuffer->PixelsPerScanLine)),
+                    (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine)),
+                    Framebuffer->PixelsPerScanLine);
+
+        /* Blank last line */
+        uint32_t *last_line = (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine));
+        for(size_t t = 0; t < 16; t++)
+            for (i = t * Framebuffer->Width; i < t * Framebuffer->Width + Framebuffer->Width; i++) last_line[i] = 0;
+
         CursorPosition.X = 0;
         CursorPosition.Y = Framebuffer->Height - 16;
     }
