@@ -18,12 +18,15 @@ void HandleKeyboard(uint8_t scancode) {
             return;
         case ENTER:
             GlobalRenderer->NewLine();
+            GlobalCLI->KeyHandle('\n');
             return;
         case BACKSPACE:
             GlobalRenderer->Backspace();
+            GlobalCLI->Backspace();
             return;
         case SPACEBAR:
             GlobalRenderer->PrintChar(' ');
+            GlobalCLI->KeyHandle(' ');
             return;
         default:
             break;

@@ -21,7 +21,7 @@ void CLI::execute(char* command, ...) {
         GlobalRenderer->Print("My name's albie and you can't beat it");
     }
     va_end(args);
-    GlobalRenderer->NewLine();
+    requestInput();
 }
 
 void CLI::requestInput() {
@@ -33,13 +33,14 @@ void CLI::requestInput() {
 
 void CLI::KeyHandle(char c) {
     if(c == '\n') {
-
-        GlobalRenderer->Print("Executing ");
-        GlobalRenderer->Print(commandBuffer);
         execute(commandBuffer);
         bufferIndex = 0;
     } else {
-        GlobalRenderer->Print("Adding");
         commandBuffer[bufferIndex++] = c;
     }
+}
+
+void CLI::Backspace() {
+    bufferIndex--;
+    if(bufferIndex <= 0) bufferIndex = 0;
 }

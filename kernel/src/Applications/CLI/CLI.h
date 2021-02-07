@@ -7,6 +7,7 @@ class CLI {
     void start();
     void execute(char* command, ...);
     void KeyHandle(char c);
+    void Backspace();
 
     private:
     void requestInput();
