@@ -21,6 +21,6 @@ namespace QWERTY_US_MAC {
 
     char Translate(uint8_t scancode, bool uppercase) {
         if(scancode > 58) return 0;
-        return ASCIITable[scancode];
+        return ASCIITable[scancode] - (uppercase ? 32 : 0);
     }
 }
