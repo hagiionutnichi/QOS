@@ -56,7 +56,7 @@ void BasicRenderer::PrintChar(char chr, unsigned int colour)
     if(CursorPosition.Y + 8 > Framebuffer->Height)
     {
         CursorPosition.X = 0;
-        CursorPosition.Y = Framebuffer->Height - 8;
+        CursorPosition.Y = Framebuffer->Height - 16;
     }
 }
 
@@ -97,6 +97,11 @@ void BasicRenderer::Clear(uint32_t colour) {
 void BasicRenderer::NewLine(){
     CursorPosition.X = 0;
     CursorPosition.Y += 16;
+    if(CursorPosition.Y >= Framebuffer->Height)
+    {
+        CursorPosition.X = 0;
+        CursorPosition.Y = Framebuffer->Height - 16;
+    }
 }
 
 void BasicRenderer::Backspace() {
