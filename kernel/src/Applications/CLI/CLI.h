@@ -5,8 +5,8 @@
 class CLI {
     public:
     void start();
+    void execute(char* command, ...);
 
     private:
     void requestInput();
-    void execute(char* command);
 };

@@ -9,6 +9,7 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
 
     CLI cli = CLI();
     cli.start();
+    cli.execute("albie", albie);
 
     while(true);
 }
