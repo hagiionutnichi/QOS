@@ -19,6 +19,7 @@ class BasicRenderer {
     void SetCursor(unsigned int x, unsigned int y);
     void Clear(uint32_t colour);
     void NewLine();
+    void Backspace();
 };
 
 extern BasicRenderer* GlobalRenderer;

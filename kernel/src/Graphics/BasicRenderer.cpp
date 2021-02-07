@@ -93,3 +93,17 @@ void BasicRenderer::NewLine(){
     CursorPosition.X = 0;
     CursorPosition.Y += 16;
 }
+
+void BasicRenderer::Backspace() {
+    CursorPosition.X -= 8;
+    if(CursorPosition.X < 0) {
+        CursorPosition.X = Framebuffer->Width - 8;
+        CursorPosition.Y -= 16;
+    }
+
+    //Clear 8x16
+    unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
+    for (unsigned long y = CursorPosition.Y; y < CursorPosition.Y + 16; y++)
+        for (unsigned long x = CursorPosition.X; x < CursorPosition.X+8; x++)
+            *(unsigned int*)(base + x + (y * Framebuffer->PixelsPerScanLine)) = 0x00000000;
+}
