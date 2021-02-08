@@ -43,6 +43,7 @@ void CLI::requestInput() {
         GlobalRenderer->NewLine();
     }
     GlobalRenderer->PrintChar('>');
+    GlobalRenderer->PrintChar(' ');
 }
 
 void CLI::KeyHandle(char c) {
