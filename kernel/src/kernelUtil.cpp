@@ -66,6 +66,11 @@ void PrepareInterrupts() {
     int_Keyboard->types_attributes = IDT_TA_InterruptGate;
     int_Keyboard->selector = 0x08;
 
+    IDTDescriptorEntry* int_Mouse = (IDTDescriptorEntry *)(idtr.offset + 0x22 * sizeof(IDTDescriptorEntry));
+    int_Mouse->setOffset((uint64_t)MouseInterrupt_Handler);
+    int_Mouse->types_attributes = IDT_TA_InterruptGate;
+    int_Mouse->selector = 0x08;
+
     asm("lidt %0" : : "m" (idtr));
 
     RemapPIC();

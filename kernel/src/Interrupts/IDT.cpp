@@ -7,5 +7,8 @@ void IDTDescriptorEntry::setOffset(uint64_t offset){
     offset2 = (uint32_t)((offset & 0xffffffff00000000) >> 32);
 }
 uint64_t IDTDescriptorEntry::getOffset(){
-    return (uint64_t)((offset2 << 32) | (offset1 << 16) | offset0);
+    return (uint64_t)(
+        (uint64_t)(offset2 << 32) | 
+        (uint64_t)(offset1 << 16) | 
+        (uint64_t)(offset0));
 }

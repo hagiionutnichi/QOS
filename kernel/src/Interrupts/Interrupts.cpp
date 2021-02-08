@@ -4,6 +4,7 @@
 #include "../io.h"
 #include "../numstring.h"
 #include "../Keyboard/keyboard.h"
+#include "../Keyboard/mouse.h"
 #include <stdint.h>
 
 __attribute__((interrupt)) void PageFault_Handler(struct interrupt_frame* frame) {
@@ -23,6 +24,12 @@ __attribute__((interrupt)) void GeneralProtectionFault_Handler(struct interrupt_
 __attribute__((interrupt)) void KeyboardInterrupt_Handler(struct interrupt_frame* frame) {
     uint8_t scancode = inb(0x60);
     HandleKeyboard(scancode);
+    PIC_EndMaster();
+}
+
+__attribute__((interrupt)) void MouseInterrupt_Handler(struct interrupt_frame* frame) {
+    // uint8_t scancode = inb(0x60);
+    HandleMouse();
     PIC_EndMaster();
 }
 
