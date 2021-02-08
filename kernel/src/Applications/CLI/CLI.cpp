@@ -26,16 +26,33 @@ void CLI::execute(char* command, ...) {
         GlobalRenderer->NewLine();
         GlobalRenderer->Print("albie - prints a cute message");
         GlobalRenderer->NewLine();
+        GlobalRenderer->Print("clear <decimal colour - default black> - clears the screen with the specified colour. The format of the colour is 0xAARRGGBB, and it needs to be converted into decimal");
+        GlobalRenderer->NewLine();
         GlobalRenderer->Print("help - lists available commands");
     } else if(begins(command, "clear")) {
-        GlobalRenderer->Clear(0x00000000);
         char *str = strtok(command, " ");
+        size_t counter = 0;
 		while(str){
-            GlobalRenderer->Print("Result: ");
-			GlobalRenderer->Print(str);
-            GlobalRenderer->NewLine();
+            counter++;
+            //If it found an argument, clear with it and ignore the rest
+            if(counter == 2) {
+                uint64_t num = myAtoi(str);
+                GlobalRenderer->Clear(num);
+                // GlobalRenderer->Print("Cleared with ");
+                // GlobalRenderer->Print(to_string((uint64_t) num));
+                // GlobalRenderer->Print(" at counter ");
+                // GlobalRenderer->Print(to_string((uint64_t) counter));
+                break;
+            }
 			str = strtok(0, " ");
 		}
+        //If no argument was passed, clear with black
+        if(counter == 1) {
+            GlobalRenderer->Clear(0x00000000);
+            // GlobalRenderer->Print("Cleared with 0");
+        }
+
+        GlobalRenderer->SetCursor(0, 0);
     } else {
         GlobalRenderer->Print("Unknown Command '");
         GlobalRenderer->Print(command);

@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Graphics/BasicRenderer.h"
 #include "../../string.h"
+#include "../../numstring.h"
 
 class CLI {
     public:

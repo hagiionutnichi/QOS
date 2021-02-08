@@ -13,3 +13,5 @@ char* strtok(char* s, char* delm);
 bool begins(char* s, char* with);
 void strcpy(char* src, char* dest, int offset);
 
+
+uint64_t myAtoi(char* str);
