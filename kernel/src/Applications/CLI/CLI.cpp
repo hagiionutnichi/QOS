@@ -27,7 +27,15 @@ void CLI::execute(char* command, ...) {
         GlobalRenderer->Print("albie - prints a cute message");
         GlobalRenderer->NewLine();
         GlobalRenderer->Print("help - lists available commands");
-        GlobalRenderer->NewLine();
+    } else if(begins(command, "clear")) {
+        GlobalRenderer->Clear(0x00000000);
+        char *str = strtok(command, " ");
+		while(str){
+            GlobalRenderer->Print("Result: ");
+			GlobalRenderer->Print(str);
+            GlobalRenderer->NewLine();
+			str = strtok(0, " ");
+		}
     } else {
         GlobalRenderer->Print("Unknown Command '");
         GlobalRenderer->Print(command);
