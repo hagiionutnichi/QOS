@@ -47,15 +47,19 @@ void CLI::requestInput() {
 
 void CLI::KeyHandle(char c) {
     if(c == '\n') {
+        GlobalRenderer->NewLine();
         commandBuffer[bufferIndex++] = '\0';
         execute(commandBuffer);
         bufferIndex = 0;
     } else {
+        GlobalRenderer->PrintChar(c);
         commandBuffer[bufferIndex++] = c;
     }
 }
 
 void CLI::Backspace() {
+    if(bufferIndex == 0) { return; }
+    GlobalRenderer->Backspace();
     bufferIndex--;
     if(bufferIndex <= 0) bufferIndex = 0;
 }

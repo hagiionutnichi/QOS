@@ -17,15 +17,15 @@ void HandleKeyboard(uint8_t scancode) {
             isRightShiftPressed = false;
             return;
         case ENTER:
-            GlobalRenderer->NewLine();
+            // GlobalRenderer->NewLine();
             GlobalCLI->KeyHandle('\n');
             return;
         case BACKSPACE:
-            GlobalRenderer->Backspace();
+            // GlobalRenderer->Backspace();
             GlobalCLI->Backspace();
             return;
         case SPACEBAR:
-            GlobalRenderer->PrintChar(' ');
+            // GlobalRenderer->PrintChar(' ');
             GlobalCLI->KeyHandle(' ');
             return;
         default:
@@ -33,7 +33,7 @@ void HandleKeyboard(uint8_t scancode) {
     }
     char result = QWERTY_US_MAC::Translate(scancode, isLeftShiftPressed || isRightShiftPressed);
     if(result != 0) {
-        GlobalRenderer->PrintChar(result);
+        // GlobalRenderer->PrintChar(result);
         GlobalCLI->KeyHandle(result);
     }
 }
