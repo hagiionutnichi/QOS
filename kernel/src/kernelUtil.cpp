@@ -106,10 +106,10 @@ void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
     GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[7]);
     GlobalRenderer->NewLine();
 
-    GlobalRenderer->PrintChar(xsdt->signature[0]);
-    GlobalRenderer->PrintChar(xsdt->signature[1]);
-    GlobalRenderer->PrintChar(xsdt->signature[2]);
-    GlobalRenderer->PrintChar(xsdt->signature[3]);
+    GlobalRenderer->PrintChar(xsdt->Signature[0]);
+    GlobalRenderer->PrintChar(xsdt->Signature[1]);
+    GlobalRenderer->PrintChar(xsdt->Signature[2]);
+    GlobalRenderer->PrintChar(xsdt->Signature[3]);
     
 }
 

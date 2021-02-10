@@ -26,7 +26,8 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
 OBJS += $(patsubst $(SRCDIR)/%.asm, $(OBJDIR)/%_asm.o, $(ASMSRC))
 DIRS = $(wildcard $(SRCDIR)/*)
 
-NEXT_BUILD_NUMBER = $(cat nbn)
+
+NBN := $(shell head -n 1 NBN)
 
 kernel: $(OBJS) link
 
@@ -67,3 +68,13 @@ buildimg:
 
 run:
 	qemu-system-x86_64 -drive file=$(BUILDDIR)/$(OSNAME).img -m 256M -cpu qemu64 -drive if=pflash,format=raw,unit=0,file="$(OVMFDIR)/OVMF_CODE-pure-efi.fd",readonly=on -drive if=pflash,format=raw,unit=1,file="$(OVMFDIR)/OVMF_VARS-pure-efi.fd" -net none
+
+dr:
+	until $$(scp -i ~/awskey.pem ec2-user@63.33.66.81:/var/lib/jenkins/jobs/QOS/branches/master/builds/$(NBN)/archive/kernel/bin/QOS.img .) ; do \
+		printf '.' ; \
+		sleep 5 ; \
+	done
+	mv -f QOS.img bin/QOS.img
+
+	rm -rf NBN
+	echo $(expr $(NBN) + 1) > NBN
