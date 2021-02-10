@@ -87,30 +87,32 @@ void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
         GlobalRenderer->PrintLn("Unable to initialise XSDT");
     }
 
-    SDTHeader* xsdt = (SDTHeader *) rsdp_ext->xsdt_address;
-    GlobalRenderer->PrintLn(to_string(rsdp_ext->xsdt_address));
+    XSDT* xsdt = (XSDT *) rsdp_ext->xsdt_address;
 
-    uint64_t entries = (xsdt->Length - sizeof(SDTHeader)) / 8;
-    GlobalRenderer->Print(to_string(entries));
-    GlobalRenderer->PrintLn(" entries in XSDT");
+    listACPIHeaders(xsdt);
+      
+    XSDT* facp = findHeader(xsdt, "FACP");
+    if(facp) {
+        GlobalRenderer->Print("Found FACP at address 0x");
+        GlobalRenderer->PrintLn(to_hstring((uint64_t) facp));
+        FADT* fadt = (FADT *) facp;
+        GlobalRenderer->Print("FADT PreferredPowerManagementProfile: ");
+        GlobalRenderer->PrintLn(to_string((uint64_t) fadt->PreferredPowerManagementProfile));
+    } else {
+        GlobalRenderer->Print("Could not find FACP");
+    }
 
-    GlobalRenderer->PrintLn(to_string(rsdp_ext->xsdt_address));
-    GlobalRenderer->PrintLn(to_string((uint64_t)rsdp_ext->rsdp.revision));
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[0]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[1]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[2]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[3]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[4]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[5]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[6]);
-    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[7]);
-    GlobalRenderer->NewLine();
+    XSDT* apic = findHeader(xsdt, "APIC");
+    if(apic) {
+        GlobalRenderer->Print("Found APIC at address 0x");
+        GlobalRenderer->PrintLn(to_hstring((uint64_t) apic));
+        // FADT* fadt = (FADT *) facp;
+        // GlobalRenderer->Print("FADT PreferredPowerManagementProfile: ");
+        // GlobalRenderer->PrintLn(to_string((uint64_t) fadt->PreferredPowerManagementProfile));
+    } else {
+        GlobalRenderer->Print("Could not find FACP");
+    }
 
-    GlobalRenderer->PrintChar(xsdt->Signature[0]);
-    GlobalRenderer->PrintChar(xsdt->Signature[1]);
-    GlobalRenderer->PrintChar(xsdt->Signature[2]);
-    GlobalRenderer->PrintChar(xsdt->Signature[3]);
-    
 }
 
 BasicRenderer r = BasicRenderer(NULL, NULL);

@@ -69,12 +69,12 @@ buildimg:
 run:
 	qemu-system-x86_64 -drive file=$(BUILDDIR)/$(OSNAME).img -m 256M -cpu qemu64 -drive if=pflash,format=raw,unit=0,file="$(OVMFDIR)/OVMF_CODE-pure-efi.fd",readonly=on -drive if=pflash,format=raw,unit=1,file="$(OVMFDIR)/OVMF_VARS-pure-efi.fd" -net none
 
-dr:
+download:
 	until $$(scp -i ~/awskey.pem ec2-user@63.33.66.81:/var/lib/jenkins/jobs/QOS/branches/master/builds/$(NBN)/archive/kernel/bin/QOS.img .) ; do \
 		printf '.' ; \
 		sleep 5 ; \
 	done
 	mv -f QOS.img bin/QOS.img
+	echo $(shell expr $(NBN) + 1) > NBN
 
-	rm -rf NBN
-	echo $(expr $(NBN) + 1) > NBN
+dr: download run
