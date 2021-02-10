@@ -132,10 +132,28 @@ typedef struct {
 	unsigned int* pixels;
 } BMP_IMAGE;
 
+typedef struct __attribute__((packed)) {
+	char signature[8];
+	uint8_t checksum;
+	char oemid[6];
+	uint8_t revision;
+	uint32_t rsdt_address;
+} RSDP;
+
+typedef struct __attribute__ ((packed)) {
+ RSDP rsdp;
+ 
+ uint32_t length;
+ uint64_t xsdt_address;
+ uint8_t ext_checksum;
+ uint8_t reserved[3];
+} RSDP_Ext;
+
 typedef struct {
 	FrameBuffer* framebuffer;
 	PSF1_FONT* psf1_Font;
 	EFI_MEMORY_DESCRIPTOR* mMap;
+	RSDP_Ext* rsdp_ext;
 	UINTN mMapSize;
 	UINTN mMapDescSize;
 } BootInfo;
@@ -285,12 +303,19 @@ EFI_STATUS efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 		SystemTable->BootServices->GetMemoryMap(&MapSize, Map, &MapKey, &DescriptorSize, &DescriptorVersion);
 	}
 
+	RSDP_Ext* rsdp_ext = NULL;
+	{
+		EFI_GUID rsdpExtGuid = ACPI_20_TABLE_GUID;
+		LibGetSystemConfigurationTable(&rsdpExtGuid, (void **)&rsdp_ext);
+	}
+
 	BootInfo bootInfo;
 	bootInfo.framebuffer = buffer;
 	bootInfo.psf1_Font = font;
 	bootInfo.mMap = Map;
 	bootInfo.mMapDescSize = DescriptorSize;
 	bootInfo.mMapSize = MapSize;
+	bootInfo.rsdp_ext = rsdp_ext;
 	
 	SystemTable->BootServices->ExitBootServices(ImageHandle, MapKey);
 
