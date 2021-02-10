@@ -23,3 +23,9 @@ XSDT* findHeader(XSDT* xsdt, const char* identifier) {
     }
     return NULL;
 }
+
+void listMADTEntries(MADT* madt) {
+    MADT_Entry_Header* entry = (MADT_Entry_Header *) (madt + 1);
+    GlobalRenderer->Print("Entry 0 type: ");
+    GlobalRenderer->PrintLn(to_string((uint64_t)entry->type));
+}

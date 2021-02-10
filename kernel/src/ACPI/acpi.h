@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "../Graphics/BasicRenderer.h"
 #include "../string.h"
+#include "../numstring.h"
 struct RSDP {
 	char signature[8];
 	uint8_t checksum;
@@ -113,5 +114,24 @@ struct FADT
     GenericAddressStructure X_GPE1Block;
 } __attribute__((packed));
 
+struct MADT_Entry_Header {
+    char type;
+    uint8_t length;
+} __attribute__((packed));
+
+struct MADT {
+    struct SDTHeader h;
+    uint32_t localApicAddr;
+    uint32_t flags;
+} __attribute__((packed));
+
+struct MADT_Entry_Type_0 {
+    struct MADT_Entry_Header h;
+    uint8_t processor_id;
+    uint8_t id;
+    uint32_t flags;
+} __attribute__((packed));
+
 void listACPIHeaders(XSDT* xsdt);
 XSDT* findHeader(XSDT* xsdt, const char* identifier);
+void listMADTEntries(MADT* madt);

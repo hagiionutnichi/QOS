@@ -106,7 +106,8 @@ void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
     if(apic) {
         GlobalRenderer->Print("Found APIC at address 0x");
         GlobalRenderer->PrintLn(to_hstring((uint64_t) apic));
-        // FADT* fadt = (FADT *) facp;
+        MADT* madt = (MADT *) apic;
+        listMADTEntries(madt);
         // GlobalRenderer->Print("FADT PreferredPowerManagementProfile: ");
         // GlobalRenderer->PrintLn(to_string((uint64_t) fadt->PreferredPowerManagementProfile));
     } else {
