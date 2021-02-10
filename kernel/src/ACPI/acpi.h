@@ -132,6 +132,35 @@ struct MADT_Entry_Type_0 {
     uint32_t flags;
 } __attribute__((packed));
 
+struct MADT_Entry_Type_1 {
+    struct MADT_Entry_Header h;
+    uint8_t io_id;
+    uint8_t reserved;
+    uint32_t io_address;
+    uint32_t general_system_interrupt_base;
+} __attribute__((packed));
+
+struct MADT_Entry_Type_2 {
+    struct MADT_Entry_Header h;
+    uint8_t bus_source;
+    uint8_t irq_source;
+    uint32_t global_system_interrupt;
+    uint16_t flags;
+} __attribute__((packed));
+
+struct MADT_Entry_Type_4 {
+    struct MADT_Entry_Header h;
+    uint8_t processor_id;
+    uint16_t flags;
+    uint8_t lint_number;
+} __attribute__((packed));
+
+struct MADT_Entry_Type_5 {
+    struct MADT_Entry_Header h;
+    uint16_t reserved;
+    uint64_t local_apic_address;
+} __attribute__((packed));
+
 void listACPIHeaders(XSDT* xsdt);
 XSDT* findHeader(XSDT* xsdt, const char* identifier);
 void listMADTEntries(MADT* madt);

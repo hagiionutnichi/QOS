@@ -25,7 +25,73 @@ XSDT* findHeader(XSDT* xsdt, const char* identifier) {
 }
 
 void listMADTEntries(MADT* madt) {
+    uint32_t totalLength = madt->h.Length;
+    totalLength -= sizeof(MADT);
+
     MADT_Entry_Header* entry = (MADT_Entry_Header *) (madt + 1);
-    GlobalRenderer->Print("Entry 0 type: ");
-    GlobalRenderer->PrintLn(to_string((uint64_t)entry->type));
+    while(totalLength > 0) {
+        GlobalRenderer->Print("Entry type: ");
+        GlobalRenderer->PrintLn(to_string((uint64_t)entry->type));
+        switch(entry->type) {
+            case 0:
+            {
+                MADT_Entry_Type_0* t0 = (MADT_Entry_Type_0 *) entry;
+                GlobalRenderer->Print("Processor ID: ");
+                GlobalRenderer->PrintLn(to_string((uint64_t)t0->processor_id));
+                totalLength -= sizeof(MADT_Entry_Type_0);
+                // while(true);
+                entry = ((MADT_Entry_Header *)(t0 + 1));
+            }
+            break;
+            case 1:
+            {
+                MADT_Entry_Type_1* t1 = (MADT_Entry_Type_1 *) entry;
+                GlobalRenderer->Print("IO ID: ");
+                GlobalRenderer->PrintLn(to_string((uint64_t)t1->io_id));
+                GlobalRenderer->Print("IO Address: ");
+                GlobalRenderer->PrintLn(to_hstring(t1->io_address));
+                totalLength -= sizeof(MADT_Entry_Type_1);
+                // while(true);
+                entry = ((MADT_Entry_Header *)(t1 + 1));
+            }
+            break;
+            case 2:
+            {
+                MADT_Entry_Type_2* t2 = (MADT_Entry_Type_2 *) entry;
+                GlobalRenderer->Print("Bus source: ");
+                GlobalRenderer->PrintLn(to_string((uint64_t)t2->bus_source));
+                totalLength -= sizeof(MADT_Entry_Type_2);
+                // while(true);
+                entry = ((MADT_Entry_Header *)(t2 + 1));
+            }
+            break;
+            case 4:
+            {
+                MADT_Entry_Type_4* t4 = (MADT_Entry_Type_4 *) entry;
+                GlobalRenderer->Print("Proc ID(T4): ");
+                GlobalRenderer->PrintLn(to_string((uint64_t)t4->processor_id));
+                totalLength -= sizeof(MADT_Entry_Type_4);
+                // while(true);
+                entry = ((MADT_Entry_Header *)(t4 + 1));
+            }
+            break;
+            case 5:
+            {
+                MADT_Entry_Type_5* t5 = (MADT_Entry_Type_5 *) entry;
+                GlobalRenderer->Print("Local APIC Address: 0x");
+                GlobalRenderer->PrintLn(to_hstring(t5->local_apic_address));
+                totalLength -= sizeof(MADT_Entry_Type_5);
+                // while(true);
+                entry = ((MADT_Entry_Header *)(t5 + 1));
+            }
+            break;
+            default:
+            {
+                totalLength = 0;
+            }
+            break;
+        }
+
+    }
+
 }
