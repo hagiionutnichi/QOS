@@ -30,6 +30,25 @@ struct RSDP_Ext {
  uint8_t reserved[3];
 }  __attribute__ ((packed));
 
+struct SDTHeader {
+  char Signature[4];
+  uint32_t Length;
+  uint8_t Revision;
+  uint8_t Checksum;
+  char OEMID[6];
+  char OEMTableID[8];
+  uint32_t OEMRevision;
+  uint32_t CreatorID;
+  uint32_t CreatorRevision;
+}  __attribute__ ((packed));
+
+// struct XSDT {
+//   SDTHeader header;
+//   uint32_t sigint() const {
+// return *(uint32_t*) header.Signature;
+//     }
+// };
+
 struct BootInfo {
 	FrameBuffer* framebuffer;
 	PSF1_FONT* psf1_Font;

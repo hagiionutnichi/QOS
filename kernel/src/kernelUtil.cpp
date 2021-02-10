@@ -80,6 +80,30 @@ void PrepareInterrupts() {
     asm("sti");
 }
 
+void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
+    // if(rsdp_ext->rsdp.revision != 2) {
+    //     GlobalRenderer->Print("Unable to initialise XSDT");
+    // }
+    // SDTHeader* xsdt = (SDTHeader *) rsdp_ext->xsdt_address;
+    // GlobalRenderer->Print(to_string(rsdp_ext->xsdt_address));
+    // uint64_t entries = (xsdt->Length - sizeof(SDTHeader)) / 8;
+    // GlobalRenderer->Print(to_string(entries));
+    // GlobalRenderer->Print(" entries in XSDT");
+
+    GlobalRenderer->PrintLn(to_string(rsdp_ext->xsdt_address));
+    GlobalRenderer->PrintLn(to_string((uint64_t)rsdp_ext->rsdp.revision));
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[0]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[1]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[2]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[3]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[4]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[5]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[6]);
+    GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[7]);
+    GlobalRenderer->NewLine();
+    
+}
+
 BasicRenderer r = BasicRenderer(NULL, NULL);
 KernelInfo InitialiseKernel(BootInfo* bootInfo) {
     r = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
@@ -94,6 +118,7 @@ KernelInfo InitialiseKernel(BootInfo* bootInfo) {
     PrepareInterrupts(); 
     //Clear screen
     memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
+    InitialiseXSDT(bootInfo->rsdp_ext);
 
     return kernelInfo;
 }

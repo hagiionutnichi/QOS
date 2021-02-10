@@ -15,6 +15,7 @@ class BasicRenderer {
     void PrintChar(char chr, unsigned int colour = 0xffffffff);
     void PutPixel(unsigned int colour, unsigned int x, unsigned int y);
     void Print(const char* str, unsigned int colour = 0xffffffff);
+    void PrintLn(const char* str, unsigned int colour = 0xffffffff);
     void DrawBMP(BMP_IMAGE* image, unsigned int xOff, unsigned int yOff);
     void SetCursor(unsigned int x, unsigned int y);
     void Clear(uint32_t colour);

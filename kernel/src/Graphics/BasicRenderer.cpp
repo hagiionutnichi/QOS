@@ -54,6 +54,12 @@ void BasicRenderer::Print(const char* str, unsigned int colour)
     }
 }
 
+void BasicRenderer::PrintLn(const char* str, unsigned int colour)
+{
+    Print(str, colour);
+    NewLine();
+}
+
 void BasicRenderer::PrintChar(char chr, unsigned int colour)
 {
     unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
