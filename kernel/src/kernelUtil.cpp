@@ -81,14 +81,18 @@ void PrepareInterrupts() {
 }
 
 void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
-    // if(rsdp_ext->rsdp.revision != 2) {
-    //     GlobalRenderer->Print("Unable to initialise XSDT");
-    // }
-    // SDTHeader* xsdt = (SDTHeader *) rsdp_ext->xsdt_address;
-    // GlobalRenderer->Print(to_string(rsdp_ext->xsdt_address));
-    // uint64_t entries = (xsdt->Length - sizeof(SDTHeader)) / 8;
-    // GlobalRenderer->Print(to_string(entries));
-    // GlobalRenderer->Print(" entries in XSDT");
+    GlobalRenderer->SetCursor(0, 0);
+
+    if(rsdp_ext->rsdp.revision != 2) {
+        GlobalRenderer->PrintLn("Unable to initialise XSDT");
+    }
+
+    SDTHeader* xsdt = (SDTHeader *) rsdp_ext->xsdt_address;
+    GlobalRenderer->PrintLn(to_string(rsdp_ext->xsdt_address));
+
+    uint64_t entries = (xsdt->Length - sizeof(SDTHeader)) / 8;
+    GlobalRenderer->Print(to_string(entries));
+    GlobalRenderer->PrintLn(" entries in XSDT");
 
     GlobalRenderer->PrintLn(to_string(rsdp_ext->xsdt_address));
     GlobalRenderer->PrintLn(to_string((uint64_t)rsdp_ext->rsdp.revision));
@@ -101,6 +105,11 @@ void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
     GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[6]);
     GlobalRenderer->PrintChar(rsdp_ext->rsdp.signature[7]);
     GlobalRenderer->NewLine();
+
+    GlobalRenderer->PrintChar(xsdt->signature[0]);
+    GlobalRenderer->PrintChar(xsdt->signature[1]);
+    GlobalRenderer->PrintChar(xsdt->signature[2]);
+    GlobalRenderer->PrintChar(xsdt->signature[3]);
     
 }
 
