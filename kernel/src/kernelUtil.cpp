@@ -108,8 +108,6 @@ void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
         GlobalRenderer->PrintLn(to_hstring((uint64_t) apic));
         MADT* madt = (MADT *) apic;
         listMADTEntries(madt);
-        // GlobalRenderer->Print("FADT PreferredPowerManagementProfile: ");
-        // GlobalRenderer->PrintLn(to_string((uint64_t) fadt->PreferredPowerManagementProfile));
     } else {
         GlobalRenderer->Print("Could not find FACP");
     }

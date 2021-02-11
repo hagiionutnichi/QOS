@@ -78,3 +78,6 @@ download:
 	echo $(shell expr $(NBN) + 1) > NBN
 
 dr: download run
+
+vbox:
+	VBoxManage convertfromraw --format VDI $(BUILDDIR)/$(OSNAME).img $(BUILDDIR)/$(OSNAME).vdi
