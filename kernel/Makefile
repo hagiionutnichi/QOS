@@ -80,4 +80,5 @@ download:
 dr: download run
 
 vbox:
+	mv $(BUILDDIR)/$(OSNAME).vdi $(BUILDDIR)/$(OSNAME).vdi.old
 	VBoxManage convertfromraw --format VDI $(BUILDDIR)/$(OSNAME).img $(BUILDDIR)/$(OSNAME).vdi
