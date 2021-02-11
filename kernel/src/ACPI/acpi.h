@@ -164,3 +164,4 @@ struct MADT_Entry_Type_5 {
 void listACPIHeaders(XSDT* xsdt);
 XSDT* findHeader(XSDT* xsdt, const char* identifier);
 void listMADTEntries(MADT* madt);
+void InitialiseXSDT(RSDP_Ext* rsdp_ext);

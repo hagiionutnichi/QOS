@@ -20,8 +20,8 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     // GlobalRenderer->PrintChar(bootInfo->rsdp_ext->rsdp.signature[7]);
     // GlobalRenderer->NewLine();
 
-    // GlobalCLI = &c;
-    // GlobalCLI->start();
+    GlobalCLI = &c;
+    GlobalCLI->start();
     // cli.execute("albie", albie);
     while(true);
 }

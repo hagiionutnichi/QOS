@@ -80,40 +80,6 @@ void PrepareInterrupts() {
     asm("sti");
 }
 
-void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
-    GlobalRenderer->SetCursor(0, 0);
-
-    if(rsdp_ext->rsdp.revision != 2) {
-        GlobalRenderer->PrintLn("Unable to initialise XSDT");
-    }
-
-    XSDT* xsdt = (XSDT *) rsdp_ext->xsdt_address;
-
-    listACPIHeaders(xsdt);
-      
-    XSDT* facp = findHeader(xsdt, "FACP");
-    if(facp) {
-        GlobalRenderer->Print("Found FACP at address 0x");
-        GlobalRenderer->PrintLn(to_hstring((uint64_t) facp));
-        FADT* fadt = (FADT *) facp;
-        GlobalRenderer->Print("FADT PreferredPowerManagementProfile: ");
-        GlobalRenderer->PrintLn(to_string((uint64_t) fadt->PreferredPowerManagementProfile));
-    } else {
-        GlobalRenderer->Print("Could not find FACP");
-    }
-
-    XSDT* apic = findHeader(xsdt, "APIC");
-    if(apic) {
-        GlobalRenderer->Print("Found APIC at address 0x");
-        GlobalRenderer->PrintLn(to_hstring((uint64_t) apic));
-        MADT* madt = (MADT *) apic;
-        listMADTEntries(madt);
-    } else {
-        GlobalRenderer->Print("Could not find FACP");
-    }
-
-}
-
 BasicRenderer r = BasicRenderer(NULL, NULL);
 KernelInfo InitialiseKernel(BootInfo* bootInfo) {
     r = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
