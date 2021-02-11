@@ -84,7 +84,7 @@ BasicRenderer r = BasicRenderer(NULL, NULL);
 KernelInfo InitialiseKernel(BootInfo* bootInfo) {
     r = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
     GlobalRenderer = &r;
-
+    GlobalRenderer->SetCursor(0, 0);
 
     GDTDescriptor gdtDescriptor;
     gdtDescriptor.Size = sizeof(GDT) - 1;
