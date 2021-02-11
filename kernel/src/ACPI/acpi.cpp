@@ -97,8 +97,6 @@ void listMADTEntries(MADT* madt) {
 }
 
 void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
-    GlobalRenderer->SetCursor(0, 0);
-
     if(rsdp_ext->rsdp.revision != 2) {
         GlobalRenderer->PrintLn("Unable to initialise XSDT");
     }
