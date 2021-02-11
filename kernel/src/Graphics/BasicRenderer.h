@@ -23,6 +23,10 @@ class BasicRenderer {
     void Clear(uint32_t colour);
     void NewLine();
     void Backspace();
+    void SetClearColour(uint32_t colour);
+
+    private:
+    uint32_t ClearColour = 0;
 };
 
 extern BasicRenderer* GlobalRenderer;

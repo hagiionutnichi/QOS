@@ -14,6 +14,10 @@ void memory_copy(uint32_t *source, uint32_t *dest, int nbytes) {
     }
 }
 
+void BasicRenderer::SetClearColour(uint32_t colour) {
+    this->ClearColour = colour;
+}
+
 void BasicRenderer::PutChar(unsigned int colour, char chr, unsigned int xOff, unsigned int yOff)
 {
     unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
@@ -116,11 +120,9 @@ void BasicRenderer::Clear(uint32_t colour) {
     for(size_t y = 0; y < Framebuffer->Height; y++) 
         for(size_t x = 0; x < Framebuffer->PixelsPerScanLine; x++)
             PutPixel(colour, x, y);
-    
-    // memset(Framebuffer->BaseAddress, colour, Framebuffer->BufferSize);
-    // Print("Called Clear with argument ");
-    // PrintLn(to_string((uint64_t) colour));
+
     GlobalRenderer->SetCursor(0, 0);
+    GlobalRenderer->SetClearColour(colour);
 
 }
 void BasicRenderer::NewLine(){
@@ -167,7 +169,7 @@ void BasicRenderer::Backspace() {
     unsigned int* pixPtr = (unsigned int*)Framebuffer->BaseAddress;
     for (unsigned long y = yOff; y < yOff + 16; y++){
         for (unsigned long x = xOff - 8; x < xOff; x++){
-                    *(unsigned int*)(pixPtr + x + (y * Framebuffer->PixelsPerScanLine)) = 0x00000000;
+                    *(unsigned int*)(pixPtr + x + (y * Framebuffer->PixelsPerScanLine)) = ClearColour;
         }
     }
 
