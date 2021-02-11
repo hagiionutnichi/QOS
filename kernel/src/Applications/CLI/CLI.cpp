@@ -4,6 +4,7 @@
 CLI* GlobalCLI = NULL;
 char* commandBuffer;
 uint8_t bufferIndex;
+
 void CLI::start() {
     commandBuffer = (char*) GlobalAllocator.RequestPage();
     bufferIndex = 0;
@@ -53,6 +54,12 @@ void CLI::execute(char* command, ...) {
         }
 
         GlobalRenderer->SetCursor(0, 0);
+    } else if (strcmp(command, "ACPI") == 0) {
+        if(bootInfo) {
+            InitialiseXSDT(bootInfo->rsdp_ext);
+        } else {
+            GlobalRenderer->PrintLn("Boot info has not been set in CLI");
+        }
     } else {
         GlobalRenderer->Print("Unknown Command '");
         GlobalRenderer->Print(command);
@@ -88,4 +95,8 @@ void CLI::Backspace() {
     GlobalRenderer->Backspace();
     bufferIndex--;
     if(bufferIndex <= 0) bufferIndex = 0;
+}
+
+void CLI::SetBootInfo(BootInfo* bootInfo) {
+    this->bootInfo = bootInfo;
 }
