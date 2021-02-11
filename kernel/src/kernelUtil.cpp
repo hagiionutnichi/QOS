@@ -3,6 +3,7 @@
 #include "Interrupts/IDT.h"
 #include "Interrupts/Interrupts.h"
 #include "io.h"
+#include "Keyboard/mouse.h"
 
 KernelInfo kernelInfo;
 PageTableManager pageTableManager  = NULL;
@@ -74,10 +75,6 @@ void PrepareInterrupts() {
     asm("lidt %0" : : "m" (idtr));
 
     RemapPIC();
-
-    outb(PIC1_DATA, 0b11111101);
-    outb(PIC2_DATA, 0b11111111);
-    asm("sti");
 }
 
 BasicRenderer r = BasicRenderer(NULL, NULL);
@@ -90,8 +87,15 @@ KernelInfo InitialiseKernel(BootInfo* bootInfo) {
     gdtDescriptor.Size = sizeof(GDT) - 1;
     gdtDescriptor.Offset = (uint64_t) &DefaultGDT;
     LoadGDT(&gdtDescriptor);
+
     PrepareMemory(bootInfo);
+    
     PrepareInterrupts(); 
+    InitPS2Mouse();
+    outb(PIC1_DATA, 0b11111001);
+    outb(PIC2_DATA, 0b11101111);
+    asm("sti");
+
     //Clear screen
     memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
     InitialiseXSDT(bootInfo->rsdp_ext);

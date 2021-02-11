@@ -9,8 +9,8 @@ class Bitmap {
     bool Set(uint64_t index, bool value);
     bool SetByte(uint64_t index, uint8_t value);
     size_t GetSize();
+    uint8_t* mBuffer;
 
     private:
     size_t mSize;
-    uint8_t* mBuffer;
 };

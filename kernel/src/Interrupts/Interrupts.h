@@ -12,11 +12,11 @@
 #define PIC_EOI 0x20
 
 struct interrupt_frame;
-__attribute__((interrupt)) void PageFault_Handler(struct interrupt_frame* frame);
-__attribute__((interrupt)) void DoubleFault_Handler(struct interrupt_frame* frame);
-__attribute__((interrupt)) void GeneralProtectionFault_Handler(struct interrupt_frame* frame);
-__attribute__((interrupt)) void KeyboardInterrupt_Handler(struct interrupt_frame* frame);
-__attribute__((interrupt)) void MouseInterrupt_Handler(struct interrupt_frame* frame);
+__attribute__((interrupt)) void PageFault_Handler(interrupt_frame* frame);
+__attribute__((interrupt)) void DoubleFault_Handler(interrupt_frame* frame);
+__attribute__((interrupt)) void GeneralProtectionFault_Handler(interrupt_frame* frame);
+__attribute__((interrupt)) void KeyboardInterrupt_Handler(interrupt_frame* frame);
+__attribute__((interrupt)) void MouseInterrupt_Handler(interrupt_frame* frame);
 
 void RemapPIC();  
 void PIC_EndMaster();
