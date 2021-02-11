@@ -28,29 +28,22 @@ void CLI::execute(char* command, ...) {
         GlobalRenderer->PrintLn("ACPI - lists ACPI Tables");
         GlobalRenderer->Print("help - lists available commands");
     } else if(begins(command, "clear")) {
-        char *str = strtok(command, " ");
-        size_t counter = 0;
-		while(str){
-            counter++;
-            //If it found an argument, clear with it and ignore the rest
-            if(counter == 2) {
-                uint64_t num = myAtoi(str);
-                GlobalRenderer->Clear(num);
-                // GlobalRenderer->Print("Cleared with ");
-                // GlobalRenderer->Print(to_string((uint64_t) num));
-                // GlobalRenderer->Print(" at counter ");
-                // GlobalRenderer->Print(to_string((uint64_t) counter));
-                break;
-            }
-			str = strtok(0, " ");
-		}
         //If no argument was passed, clear with black
-        if(counter == 1) {
+        if(strlen(command) == strlen("clear")) {
             GlobalRenderer->Clear(0x00000000);
-            // GlobalRenderer->Print("Cleared with 0");
+        } else {
+            uint32_t r = strargval(command, 1);
+            uint32_t g = strargval(command, 2);
+            uint32_t b = strargval(command, 3);
+            uint32_t col = (0xFF << 24) + (r << 16) + (g << 8) + (b);
+            GlobalRenderer->Clear(col);
+
+            GlobalRenderer->Print("Cleared with ");
+            GlobalRenderer->Print(to_hstring((uint32_t) col));
+            // GlobalRenderer->Print(" at counter ");
+            // GlobalRenderer->Print(to_string((uint64_t) counter));
         }
 
-        GlobalRenderer->SetCursor(0, 0);
     } else if (strcmp(command, "ACPI") == 0) {
         if(bootInfo) {
             InitialiseXSDT(bootInfo->rsdp_ext);

@@ -112,16 +112,15 @@ void BasicRenderer::SetCursor(unsigned int x, unsigned int y)
     CursorPosition.Y = y;
 }
 void BasicRenderer::Clear(uint32_t colour) {
-    uint64_t fbBase = (uint64_t)Framebuffer->BaseAddress;
-    uint64_t fbBytesPerScanline = Framebuffer->PixelsPerScanLine * 4;
-    uint64_t fbHeight = Framebuffer->Height;
-    uint64_t fbSize = Framebuffer->BufferSize;
-    for(int vsc = 0; vsc < fbHeight; vsc++) {
-        uint64_t pixPtrBase = fbBase + (fbBytesPerScanline * vsc);
-        for(uint32_t* pixPtr = (uint32_t*)pixPtrBase; pixPtr < (uint32_t*)(pixPtrBase + fbBytesPerScanline); pixPtr++) {
-            *pixPtr = colour;
-        }
-    }
+    //Clear screen
+    for(size_t y = 0; y < Framebuffer->Height; y++) 
+        for(size_t x = 0; x < Framebuffer->PixelsPerScanLine; x++)
+            PutPixel(colour, x, y);
+    
+    // memset(Framebuffer->BaseAddress, colour, Framebuffer->BufferSize);
+    // Print("Called Clear with argument ");
+    // PrintLn(to_string((uint64_t) colour));
+    GlobalRenderer->SetCursor(0, 0);
 
 }
 void BasicRenderer::NewLine(){

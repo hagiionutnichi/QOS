@@ -4,6 +4,8 @@
 #include "../FileFormats/BMP.h"
 #include "../math.h"
 #include <stdint.h>
+#include "../Memory/memory.h"
+#include "../numstring.h"
 
 class BasicRenderer {
     public:

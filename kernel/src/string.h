@@ -13,6 +13,8 @@ void hex_to_ascii(int n, char str[]);
 char* strtok(char* s, char* delm);
 bool begins(char* s, char* with);
 void strcpy(char* src, char* dest, int offset);
-
+int strargcmp(char* command, size_t argumentIndex, const char* cmp, unsigned int cmpLength);
+uint64_t strargval(char* command, size_t argumentIndex);
 
 uint64_t myAtoi(char* str);
+uint64_t myAtoiChar(char* str, const char c);

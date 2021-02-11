@@ -137,6 +137,11 @@ bool begins(char* s, char* with) {
 
 uint64_t myAtoi(char* str)
 {
+    return myAtoiChar(str, '\0');
+}
+
+uint64_t myAtoiChar(char* str, const char c)
+{
     // Initialize result
     uint64_t res = 0;
  
@@ -146,7 +151,7 @@ uint64_t myAtoi(char* str)
     // subtract the code from '0' to get numerical
     // value and multiply res by 10 to shuffle
     // digits left to update running total
-    for (int i = 0; str[i] != '\0'; ++i)
+    for (int i = 0; str[i] != c && str[i] != '\0'; ++i)
         res = res * 10 + str[i] - '0';
  
     // return result.
@@ -169,4 +174,25 @@ int strncmp(const char * s1, const char * s2, unsigned int n) {
     {
         return ( *(unsigned char *)s1 - *(unsigned char *)s2 );
     }
+}
+
+int strargcmp(char* command, size_t argumentIndex, const char* cmp, unsigned int cmpLength) {
+    size_t i = 0;
+    char* tmp = command;
+    while(*tmp && i < argumentIndex) {
+        if(*tmp == ' ') i++;
+        tmp++;
+    }
+
+    return strncmp(tmp, cmp, cmpLength);
+}
+
+uint64_t strargval(char* command, size_t argumentIndex) {
+    size_t i = 0;
+    char* tmp = command;
+    while(*tmp && i < argumentIndex) {
+        if(*tmp == ' ') i++;
+        tmp++;
+    }
+    return myAtoiChar(tmp, ' ');
 }
