@@ -43,13 +43,13 @@ void BasicRenderer::Print(const char* str, unsigned int colour)
     
     char* chr = (char *) str;
     while(*chr != 0){
-        PutChar(colour, *chr, CursorPosition.X, CursorPosition.Y);
-        CursorPosition.X+=8;
-        if(CursorPosition.X + 8 > Framebuffer->Width)
-        {
-            CursorPosition.X = 0;
-            CursorPosition.Y += 16;
-        }
+        PrintChar(*chr, colour);
+        // CursorPosition.X+=8;
+        // if(CursorPosition.X + 8 > Framebuffer->Width)
+        // {
+        //     CursorPosition.X = 0;
+        //     CursorPosition.Y += 16;
+        // }
         chr++;
     }
 }
@@ -73,20 +73,18 @@ void BasicRenderer::PrintChar(char chr, unsigned int colour)
     }
         /* Check if the offset is over screen size and scroll */
     if (CursorPosition.Y > Framebuffer->Height - 16) {
+        uint8_t distance = CursorPosition.Y - Framebuffer->Height + 16;
         int i;
-        for (i = 16; i < Framebuffer->Height; i++) 
-            memory_copy((uint32_t*)(base + 0 + (i * Framebuffer->PixelsPerScanLine)),
-                    (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine)),
+        for (i = distance; i < Framebuffer->Height; i++) 
+            memory_copy((uint32_t*)(base + (i * Framebuffer->PixelsPerScanLine)),
+                    (uint32_t*)(base + ((i-distance) * Framebuffer->PixelsPerScanLine)),
                     Framebuffer->PixelsPerScanLine);
 
         /* Blank last line */
-        uint32_t *last_line = (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine));
+        uint32_t *last_line = (uint32_t*)(base + ((Framebuffer->Height-16) * Framebuffer->PixelsPerScanLine));
         for(size_t t = 0; t < 16; t++)
-            for (i = t * Framebuffer->Width; i < t * Framebuffer->Width + Framebuffer->Width; i++) last_line[i] = 0;
-    }
+            for (i = t * Framebuffer->PixelsPerScanLine; i < t * Framebuffer->PixelsPerScanLine + Framebuffer->PixelsPerScanLine; i++) last_line[i] = 0;
 
-    if(CursorPosition.Y + 16 > Framebuffer->Height)
-    {
         CursorPosition.X = 0;
         CursorPosition.Y = Framebuffer->Height - 16;
     }
@@ -135,17 +133,18 @@ void BasicRenderer::NewLine(){
     unsigned int* base = (unsigned int*)Framebuffer->BaseAddress;
 
     /* Check if the offset is over screen size and scroll */
-    if (yOff > Framebuffer->Height - 16) {
+    if (CursorPosition.Y > Framebuffer->Height - 16) {
+        uint8_t distance = CursorPosition.Y - Framebuffer->Height + 16;
         int i;
-        for (i = 16; i < Framebuffer->Height; i++) 
-            memory_copy((uint32_t*)(base + 0 + (i * Framebuffer->PixelsPerScanLine)),
-                    (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine)),
+        for (i = distance; i < Framebuffer->Height; i++) 
+            memory_copy((uint32_t*)(base + (i * Framebuffer->PixelsPerScanLine)),
+                    (uint32_t*)(base + ((i-distance) * Framebuffer->PixelsPerScanLine)),
                     Framebuffer->PixelsPerScanLine);
 
         /* Blank last line */
-        uint32_t *last_line = (uint32_t*)(base + 0 + ((i-16) * Framebuffer->PixelsPerScanLine));
+        uint32_t *last_line = (uint32_t*)(base + ((Framebuffer->Height-16) * Framebuffer->PixelsPerScanLine));
         for(size_t t = 0; t < 16; t++)
-            for (i = t * Framebuffer->Width; i < t * Framebuffer->Width + Framebuffer->Width; i++) last_line[i] = 0;
+            for (i = t * Framebuffer->PixelsPerScanLine; i < t * Framebuffer->PixelsPerScanLine + Framebuffer->PixelsPerScanLine; i++) last_line[i] = 0;
 
         CursorPosition.X = 0;
         CursorPosition.Y = Framebuffer->Height - 16;
