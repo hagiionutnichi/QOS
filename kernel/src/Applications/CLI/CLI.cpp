@@ -37,11 +37,6 @@ void CLI::execute(char* command, ...) {
             uint32_t b = strargval(command, 3);
             uint32_t col = (0xFF << 24) + (r << 16) + (g << 8) + (b);
             GlobalRenderer->Clear(col);
-
-            GlobalRenderer->Print("Cleared with ");
-            GlobalRenderer->Print(to_hstring((uint32_t) col));
-            // GlobalRenderer->Print(" at counter ");
-            // GlobalRenderer->Print(to_string((uint64_t) counter));
         }
 
     } else if (strcmp(command, "ACPI") == 0) {
