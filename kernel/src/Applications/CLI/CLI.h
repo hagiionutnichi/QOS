@@ -11,11 +11,11 @@ class CLI {
     void execute(char* command, ...);
     void KeyHandle(char c);
     void Backspace();
-    void SetBootInfo(BootInfo* bootInfo);
+    void SetBootInfo(struct BootInfo* bootInfo);
 
     private:
     void requestInput();
-    BootInfo* bootInfo;
+    struct BootInfo* bootInfo;
 };
 
 extern CLI* GlobalCLI;
