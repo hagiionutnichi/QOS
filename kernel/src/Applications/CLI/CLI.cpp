@@ -21,14 +21,11 @@ void CLI::execute(char* command, ...) {
         // GlobalRenderer->DrawBMP(albie, 0, 0);
         GlobalRenderer->Print("My name's albie and you can't beat it");
     } else if(strcmp(command, "help") == 0) {
-        GlobalRenderer->Print("Available Commands:");
-        GlobalRenderer->NewLine();
-        GlobalRenderer->Print("-------------------");
-        GlobalRenderer->NewLine();
-        GlobalRenderer->Print("albie - prints a cute message");
-        GlobalRenderer->NewLine();
-        GlobalRenderer->Print("clear <decimal colour - default black> - clears the screen with the specified colour. The format of the colour is 0xAARRGGBB, and it needs to be converted into decimal");
-        GlobalRenderer->NewLine();
+        GlobalRenderer->PrintLn("Available Commands:");
+        GlobalRenderer->PrintLn("-------------------");
+        GlobalRenderer->PrintLn("albie - prints a cute message");
+        GlobalRenderer->PrintLn("clear <decimal colour - default black> - clears the screen with the specified colour. The format of the colour is 0xAARRGGBB, and it needs to be converted into decimal");
+        GlobalRenderer->PrintLn("ACPI - lists ACPI Tables");
         GlobalRenderer->Print("help - lists available commands");
     } else if(begins(command, "clear")) {
         char *str = strtok(command, " ");
