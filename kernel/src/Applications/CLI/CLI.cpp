@@ -1,7 +1,7 @@
 #include "CLI.h"
 #include <cstdarg>
 
-CLI* GlobalCLI;
+CLI* GlobalCLI = NULL;
 char* commandBuffer;
 uint8_t bufferIndex;
 void CLI::start() {
