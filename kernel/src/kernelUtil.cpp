@@ -89,15 +89,16 @@ KernelInfo InitialiseKernel(BootInfo* bootInfo) {
     LoadGDT(&gdtDescriptor);
 
     PrepareMemory(bootInfo);
-    
+
+    //Clear screen
+    memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
+
     PrepareInterrupts(); 
     InitPS2Mouse();
     outb(PIC1_DATA, 0b11111001);
     outb(PIC2_DATA, 0b11101111);
     asm("sti");
 
-    //Clear screen
-    memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
     InitialiseXSDT(bootInfo->rsdp_ext);
 
     return kernelInfo;

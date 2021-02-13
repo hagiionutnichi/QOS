@@ -13,6 +13,7 @@
 #include "Memory/PageTableManager.h"
 #include "Applications/CLI/CLI.h"
 #include "ACPI/acpi.h"
+#include "Keyboard/mouse.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;

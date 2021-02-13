@@ -23,6 +23,9 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     GlobalCLI = &c;
     GlobalCLI->start();
     GlobalCLI->SetBootInfo(bootInfo);
+    while(true){
+        ProcessMousePacket();
+    }
     // cli.execute("albie", albie);
     while(true);
 }
