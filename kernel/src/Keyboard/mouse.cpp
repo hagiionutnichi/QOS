@@ -140,13 +140,13 @@ void ProcessMousePacket(){
         GlobalRenderer->DrawOverlayMouseCursor(MousePointer, MousePosition, 0xffffffff);
 
         if (MousePacket[0] & PS2Leftbutton){
-            GlobalRenderer->PutChar(0x00ffff00, 'a', MousePosition.X, MousePosition.Y);
+            GlobalRenderer->PutChar(GlobalRenderer->GetPrimaryColour(), 'a', MousePosition.X, MousePosition.Y);
         }
         if (MousePacket[0] & PS2Middlebutton){
             
         }
         if (MousePacket[0] & PS2Rightbutton){
-            GlobalRenderer->PutChar(0x0000ff00, 'a', MousePosition.X, MousePosition.Y);
+            GlobalRenderer->PutChar(GlobalRenderer->GetSecondaryColour(), 'a', MousePosition.X, MousePosition.Y);
         }
 
         MousePacketReady = false;

@@ -240,3 +240,16 @@ void BasicRenderer::DrawOverlayMouseCursor(uint8_t* mouseCursor, Point position,
 uint32_t BasicRenderer::GetPix(uint32_t x, uint32_t y){
     return *(uint32_t*)((uint64_t)Framebuffer->BaseAddress + (x*4) + (y * Framebuffer->PixelsPerScanLine * 4));
 }
+
+
+void BasicRenderer::SetPrimaryColour(uint32_t colour) {
+    PrimaryColour = colour;
+}
+
+void BasicRenderer::SetSecondaryColour(uint32_t colour) {
+    SecondaryColour = colour;
+}
+
+uint32_t BasicRenderer::GetPrimaryColour() { return PrimaryColour; }
+
+uint32_t BasicRenderer::GetSecondaryColour() { return SecondaryColour; }

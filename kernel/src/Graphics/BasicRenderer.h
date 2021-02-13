@@ -30,9 +30,15 @@ class BasicRenderer {
     void DrawOverlayMouseCursor(uint8_t* mouseCursor, Point position, uint32_t colour);
     void ClearMouseCursor(uint8_t* mouseCursor, Point position);
     bool MouseDrawn;
+    void SetPrimaryColour(uint32_t colour);
+    void SetSecondaryColour(uint32_t colour);
+    uint32_t GetPrimaryColour();
+    uint32_t GetSecondaryColour();
 
     private:
     uint32_t ClearColour = 0;
+    uint32_t PrimaryColour = 0;
+    uint32_t SecondaryColour = 0;
 };
 
 extern BasicRenderer* GlobalRenderer;

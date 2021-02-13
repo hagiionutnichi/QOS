@@ -45,6 +45,28 @@ void CLI::execute(char* command, ...) {
         } else {
             GlobalRenderer->PrintLn("Boot info has not been set in CLI");
         }
+    } else if (begins(command, "primary")) {
+        if(strlen(command) == strlen("primary")) {
+            GlobalRenderer->PrintLn("Usage: primary <R0-255> <G0-255> <B0-255>");
+        } else {
+            uint32_t r = strargval(command, 1);
+            uint32_t g = strargval(command, 2);
+            uint32_t b = strargval(command, 3);
+            uint32_t col = (0xFF << 24) + (r << 16) + (g << 8) + (b);
+            GlobalRenderer->SetPrimaryColour(col);
+        }
+
+    } else if (begins(command, "secondary")) {
+        if(strlen(command) == strlen("secondary")) {
+            GlobalRenderer->PrintLn("Usage: secondary <R0-255> <G0-255> <B0-255>");
+        } else {
+            uint32_t r = strargval(command, 1);
+            uint32_t g = strargval(command, 2);
+            uint32_t b = strargval(command, 3);
+            uint32_t col = (0xFF << 24) + (r << 16) + (g << 8) + (b);
+            GlobalRenderer->SetSecondaryColour(col);
+        }
+
     } else {
         GlobalRenderer->Print("Unknown Command '");
         GlobalRenderer->Print(command);
