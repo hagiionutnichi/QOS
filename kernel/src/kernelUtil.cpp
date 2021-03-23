@@ -23,9 +23,9 @@ void PrepareMemory(BootInfo* bootInfo) {
 
     g_PageTableManager = PageTableManager(PML4);
 
-    for (uint64_t t = 0; t < GetMemorySize(bootInfo->mMap, mMapEntries, bootInfo->mMapDescSize); t+= 0x1000){
-        g_PageTableManager.MapMemory((void*)t, (void*)t);
-    }
+    // for (uint64_t t = 0; t < GetMemorySize(bootInfo->mMap, mMapEntries, bootInfo->mMapDescSize); t+= 0x1000){
+    //     g_PageTableManager.MapMemory((void*)t, (void*)t);
+    // }
 
     uint64_t fbBase = (uint64_t)bootInfo->framebuffer->BaseAddress;
     uint64_t fbSize = (uint64_t)bootInfo->framebuffer->BufferSize + 0x1000;
