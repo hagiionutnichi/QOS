@@ -67,7 +67,7 @@ buildimg:
 	mcopy -i $(BUILDDIR)/$(OSNAME).img albie320.bmp ::
 
 run:
-	qemu-system-x86_64 -drive file=$(BUILDDIR)/$(OSNAME).img -m 256M -cpu qemu64 -drive if=pflash,format=raw,unit=0,file="$(OVMFDIR)/OVMF_CODE-pure-efi.fd",readonly=on -drive if=pflash,format=raw,unit=1,file="$(OVMFDIR)/OVMF_VARS-pure-efi.fd" -net none
+	qemu-system-x86_64 -machine q35 -drive file=$(BUILDDIR)/$(OSNAME).img -m 256M -cpu qemu64 -drive if=pflash,format=raw,unit=0,file="$(OVMFDIR)/OVMF_CODE-pure-efi.fd",readonly=on -drive if=pflash,format=raw,unit=1,file="$(OVMFDIR)/OVMF_VARS-pure-efi.fd" -net none
 
 download:
 	until $$(scp -i ~/awskey.pem ec2-user@34.251.121.206:/var/lib/jenkins/jobs/QOS/branches/master/builds/$(NBN)/archive/kernel/bin/QOS.img .) ; do \
