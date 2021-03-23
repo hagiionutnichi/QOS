@@ -123,7 +123,16 @@ void InitialiseXSDT(RSDP_Ext* rsdp_ext) {
         MADT* madt = (MADT *) apic;
         listMADTEntries(madt);
     } else {
-        GlobalRenderer->Print("Could not find FACP");
+        GlobalRenderer->Print("Could not find APIC");
+    }
+
+    XSDT* mcfg = findHeader(xsdt, "MCFG");
+    if(mcfg) {
+        for (int t = 0; t < 4; t++){
+            GlobalRenderer->PrintChar(mcfg->header.Signature[t]);
+        }
+    } else {
+        GlobalRenderer->Print("Could not find MCFG");
     }
 
 }
