@@ -17,7 +17,7 @@ enum PT_Flag {
 
 struct PageDirectoryEntry {
     uint64_t Value;
-    void SetFlag(PT_Flag flag, bool value);
+    void SetFlag(PT_Flag flag, bool enabled);
     bool GetFlag(PT_Flag flag);
     void SetAddress(uint64_t address);
     uint64_t GetAddress();

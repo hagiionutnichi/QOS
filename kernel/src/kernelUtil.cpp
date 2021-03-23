@@ -4,14 +4,15 @@
 #include "Interrupts/Interrupts.h"
 #include "io.h"
 #include "Keyboard/mouse.h"
+#include "acpi.h"
 
-KernelInfo kernelInfo;
+KernelInfo kernelInfo; 
 
-void PrepareMemory(BootInfo* bootInfo) {
+void PrepareMemory(BootInfo* bootInfo){
     uint64_t mMapEntries = bootInfo->mMapSize / bootInfo->mMapDescSize;
 
     GlobalAllocator = PageFrameAllocator();
-    GlobalAllocator.ReadEfiMemoryMap(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDescSize);
+    GlobalAllocator.ReadEFIMemoryMap(bootInfo->mMap, bootInfo->mMapSize, bootInfo->mMapDescSize);
 
     uint64_t kernelSize = (uint64_t)&_KernelEnd - (uint64_t)&_KernelStart;
     uint64_t kernelPages = (uint64_t)kernelSize / 4096 + 1;
@@ -29,10 +30,7 @@ void PrepareMemory(BootInfo* bootInfo) {
 
     uint64_t fbBase = (uint64_t)bootInfo->framebuffer->BaseAddress;
     uint64_t fbSize = (uint64_t)bootInfo->framebuffer->BufferSize + 0x1000;
-
-    //Lock the page in which the Framebuffer resides
-    GlobalAllocator.LockPages((void*)fbBase, fbSize/0x1000 + 1);
-
+    GlobalAllocator.LockPages((void*)fbBase, fbSize/ 0x1000 + 1);
     for (uint64_t t = fbBase; t < fbBase + fbSize; t += 4096){
         g_PageTableManager.MapMemory((void*)t, (void*)t);
     }
@@ -43,63 +41,65 @@ void PrepareMemory(BootInfo* bootInfo) {
 }
 
 IDTR idtr;
-void PrepareInterrupts() {
-    idtr.limit = 0x0fff;
-    idtr.offset = (uint64_t)GlobalAllocator.RequestPage();
+void SetIDTGate(void* handler, uint8_t entryOffset, uint8_t type_attr, uint8_t selector){
 
-    IDTDescriptorEntry* int_PageFault = (IDTDescriptorEntry *)(idtr.offset + 0xE * sizeof(IDTDescriptorEntry));
-    int_PageFault->setOffset((uint64_t)PageFault_Handler);
-    int_PageFault->types_attributes = IDT_TA_InterruptGate;
-    int_PageFault->selector = 0x08;
+    IDTDescEntry* interrupt = (IDTDescEntry*)(idtr.Offset + entryOffset * sizeof(IDTDescEntry));
+    interrupt->SetOffset((uint64_t)handler);
+    interrupt->type_attr = type_attr;
+    interrupt->selector = selector;
+}
 
-    IDTDescriptorEntry* int_DoubleFault = (IDTDescriptorEntry *)(idtr.offset + 0x8 * sizeof(IDTDescriptorEntry));
-    int_DoubleFault->setOffset((uint64_t)DoubleFault_Handler);
-    int_DoubleFault->types_attributes = IDT_TA_InterruptGate;
-    int_DoubleFault->selector = 0x08;
+void PrepareInterrupts(){
+    idtr.Limit = 0x0FFF;
+    idtr.Offset = (uint64_t)GlobalAllocator.RequestPage();
 
-    IDTDescriptorEntry* int_GeneralFault = (IDTDescriptorEntry *)(idtr.offset + 0xD * sizeof(IDTDescriptorEntry));
-    int_GeneralFault->setOffset((uint64_t)GeneralProtectionFault_Handler);
-    int_GeneralFault->types_attributes = IDT_TA_InterruptGate;
-    int_GeneralFault->selector = 0x08;
-
-    IDTDescriptorEntry* int_Keyboard = (IDTDescriptorEntry *)(idtr.offset + 0x21 * sizeof(IDTDescriptorEntry));
-    int_Keyboard->setOffset((uint64_t)KeyboardInterrupt_Handler);
-    int_Keyboard->types_attributes = IDT_TA_InterruptGate;
-    int_Keyboard->selector = 0x08;
-
-    IDTDescriptorEntry* int_Mouse = (IDTDescriptorEntry *)(idtr.offset + 0x2C * sizeof(IDTDescriptorEntry));
-    int_Mouse->setOffset((uint64_t)MouseInterrupt_Handler);
-    int_Mouse->types_attributes = IDT_TA_InterruptGate;
-    int_Mouse->selector = 0x08;
-
-    asm("lidt %0" : : "m" (idtr));
+    SetIDTGate((void*)PageFault_Handler, 0xE, IDT_TA_InterruptGate, 0x08);
+    SetIDTGate((void*)DoubleFault_Handler, 0x8, IDT_TA_InterruptGate, 0x08);
+    SetIDTGate((void*)GPFault_Handler, 0xD, IDT_TA_InterruptGate, 0x08);
+    SetIDTGate((void*)KeyboardInt_Handler, 0x21, IDT_TA_InterruptGate, 0x08);
+    SetIDTGate((void*)MouseInt_Handler, 0x2C, IDT_TA_InterruptGate, 0x08);
+ 
+    asm ("lidt %0" : : "m" (idtr));
 
     RemapPIC();
 }
 
+void PrepareACPI(BootInfo* bootInfo){
+    ACPI::SDTHeader* xsdt = (ACPI::SDTHeader*)(bootInfo->rsdp->XSDTAddress);
+    
+    ACPI::MCFGHeader* mcfg = (ACPI::MCFGHeader*)ACPI::FindTable(xsdt, (char*)"MCFG");
+
+    for (int t = 0; t < 4; t++){
+        GlobalRenderer->PrintChar(mcfg->Header.Signature[t]);
+    }
+
+    // PCI::EnumeratePCI(mcfg);
+}
+
 BasicRenderer r = BasicRenderer(NULL, NULL);
-KernelInfo InitialiseKernel(BootInfo* bootInfo) {
+KernelInfo InitialiseKernel(BootInfo* bootInfo){
     r = BasicRenderer(bootInfo->framebuffer, bootInfo->psf1_Font);
     GlobalRenderer = &r;
-    GlobalRenderer->SetCursor(0, 0);
 
     GDTDescriptor gdtDescriptor;
     gdtDescriptor.Size = sizeof(GDT) - 1;
-    gdtDescriptor.Offset = (uint64_t) &DefaultGDT;
+    gdtDescriptor.Offset = (uint64_t)&DefaultGDT;
     LoadGDT(&gdtDescriptor);
 
     PrepareMemory(bootInfo);
 
-    //Clear screen
     memset(bootInfo->framebuffer->BaseAddress, 0, bootInfo->framebuffer->BufferSize);
 
-    PrepareInterrupts(); 
+    PrepareInterrupts();
+
     InitPS2Mouse();
+
+    PrepareACPI(bootInfo);
+
     outb(PIC1_DATA, 0b11111001);
     outb(PIC2_DATA, 0b11101111);
-    asm("sti");
 
-    InitialiseXSDT(bootInfo->rsdp_ext);
+    asm ("sti");
 
     return kernelInfo;
 }

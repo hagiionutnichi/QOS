@@ -1,28 +1,27 @@
 #pragma once
 
+#include <stdint.h>
 #include "Graphics/BasicRenderer.h"
-#include "Graphics/Framebuffer.h"
-#include "FileFormats/PSF_1.h"
-#include "FileFormats/BMP.h"
-#include "math.h"
-#include "numstring.h"
+// #include "cstr.h"
 #include "Memory/EfiMemory.h"
 #include "Memory/memory.h"
 #include "Memory/Bitmap.h"
 #include "Memory/PageFrameAllocator.h"
+#include "Memory/PageMapIndexer.h"
+#include "Memory/paging.h"
 #include "Memory/PageTableManager.h"
-#include "Applications/CLI/CLI.h"
-#include "ACPI/acpi.h"
 #include "Keyboard/mouse.h"
+#include "acpi.h"
+// #include "pci.h"
 
 struct BootInfo {
 	FrameBuffer* framebuffer;
 	PSF1_FONT* psf1_Font;
 	EFI_MEMORY_DESCRIPTOR* mMap;
-	RSDP_Ext* rsdp_ext;
 	uint64_t mMapSize;
 	uint64_t mMapDescSize;
-};
+	ACPI::RSDP2* rsdp;
+} ;
 
 extern uint64_t _KernelStart;
 extern uint64_t _KernelEnd;
@@ -31,4 +30,4 @@ struct KernelInfo {
     PageTableManager* pageTableManager;
 };
 
-KernelInfo InitialiseKernel(BootInfo* bootInfo);
+KernelInfo InitialiseKernel(BootInfo* BootInfo);

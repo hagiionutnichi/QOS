@@ -1,6 +1,6 @@
 #include "kernelUtil.h"
 
-CLI c = CLI();
+// CLI c = CLI();
 extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     KernelInfo kernelInfo = InitialiseKernel(bootInfo);
     PageTableManager* pageTableManager = kernelInfo.pageTableManager;
@@ -20,9 +20,9 @@ extern "C" void _start(BootInfo* bootInfo, BMP_IMAGE* albie)  {
     // GlobalRenderer->PrintChar(bootInfo->rsdp_ext->rsdp.signature[7]);
     // GlobalRenderer->NewLine();
 
-    GlobalCLI = &c;
-    GlobalCLI->start();
-    GlobalCLI->SetBootInfo(bootInfo);
+    // GlobalCLI = &c;
+    // GlobalCLI->start();
+    // GlobalCLI->SetBootInfo(bootInfo);
     while(true){
         ProcessMousePacket();
     }
